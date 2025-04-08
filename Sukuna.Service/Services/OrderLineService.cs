@@ -15,51 +15,51 @@ public class OrderLineService : IOrderLineService
         _context = context;
     }
 
-    public bool CreateOrderLine(OrderLine orderLine)
+    public bool CreateOrderLine(Moderateur orderLine)
     {
         _context.Add(orderLine);
 
         return Save();
     }
 
-    public ICollection<OrderLine> GetOrderLines()
+    public ICollection<Moderateur> GetOrderLines()
     {
         return _context.OrderLines.OrderBy(p => p.ID).ToList();
     }
-    public OrderLine GetOrderLineById(int orderLineId)
+    public Moderateur GetOrderLineById(int orderLineId)
     {
         return _context.OrderLines.Where(o => o.ID == orderLineId).FirstOrDefault();
     }
-    public ICollection<OrderLine> GetOrderLinesOfASupplierOrder(int supplierOrderId)
+    public ICollection<Moderateur> GetOrderLinesOfASupplierOrder(int supplierOrderId)
     {
         return _context.OrderLines.Where(o => o.SupplierOrder.ID == supplierOrderId).ToList();
     }
-    public ICollection<OrderLine> GetOrderLinesOfAClientOrder(int clientOrderId)
+    public ICollection<Moderateur> GetOrderLinesOfAClientOrder(int clientOrderId)
     {
         return _context.OrderLines.Where(o => o.ClientOrder.ID == clientOrderId).ToList();
     }
-    public ICollection<OrderLine> GetOrderLinesOfAArticle(int articleId)
+    public ICollection<Moderateur> GetOrderLinesOfAArticle(int articleId)
     {
         return _context.OrderLines.Where(o => o.Article.ID == articleId).ToList();
     }
-    public bool UpdateOrderLine(OrderLine orderLine)
+    public bool UpdateOrderLine(Moderateur orderLine)
     {
         _context.Update(orderLine);
         return Save();
     }
-    public bool DeleteOrderLines(List<OrderLine> orderLines) 
+    public bool DeleteOrderLines(List<Moderateur> orderLines) 
     { 
         _context.RemoveRange(orderLines);
         return Save();
     }
 
-    public bool DeleteOrderLine(OrderLine orderLine)
+    public bool DeleteOrderLine(Moderateur orderLine)
     {
         _context.Remove(orderLine);
         return Save();
     }
 
-    public bool OrderLineExists(OrderLineResource orderLineCreate)
+    public bool OrderLineExists(CommentaireResource orderLineCreate)
     {
         // Si ligne déja existante exit
         if (_context.OrderLines.Any(r => r.ID == orderLineCreate.ID))

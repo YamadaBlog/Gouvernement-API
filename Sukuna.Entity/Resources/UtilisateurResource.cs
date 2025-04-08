@@ -1,18 +1,14 @@
 ﻿using Sukuna.Common.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace Sukuna.Common.Resources;
 
-public class UserResource
+public class UtilisateurResource // Les ressources sont les saisies utilisateurs
 {
-    public int ID { get; set; }
+    public int IdUtilisateur { get; set; }
     public string Nom { get; set; }
     public string Prenom { get; set; }
     public string Email { get; set; }
-    public string MotDePasseHashe { get; set; }
     public string Role { get; set; }
+    public DateTime DateCreation { get; set; }
 }

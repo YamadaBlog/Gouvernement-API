@@ -15,44 +15,44 @@ public class ArticleService : IArticleService
         _context = context;
     }
 
-    public bool CreateArticle(Article article)
+    public bool CreateArticle(Utilisateur article)
     {
         _context.Add(article);
 
         return Save();
     }
 
-    public ICollection<Article> GetArticles()
+    public ICollection<Utilisateur> GetArticles()
     {
         return _context.Articles.OrderBy(p => p.ID).ToList();
     }
-    public Article GetArticleById(int articleId)
+    public Utilisateur GetArticleById(int articleId)
     {
         return _context.Articles.Where(c => c.ID == articleId).FirstOrDefault();
     }
 
-    public ICollection<OrderLine> GetOrderLinesByArticle(int articleId)
+    public ICollection<Moderateur> GetOrderLinesByArticle(int articleId)
     {
         return _context.OrderLines.Where(r => r.Article.ID == articleId).ToList();
     }
 
-    public ICollection<Article> GetArticlesOfASupplier(int supplierId)
+    public ICollection<Utilisateur> GetArticlesOfASupplier(int supplierId)
     {
         return _context.Articles.Where(o => o.Supplier.ID == supplierId).ToList();
     }
 
-    public bool UpdateArticle(Article article)
+    public bool UpdateArticle(Utilisateur article)
     {
         _context.Update(article);
         return Save();
     }
-    public bool DeleteArticle(Article article)
+    public bool DeleteArticle(Utilisateur article)
     {
         _context.Remove(article);
         return Save();
     }
 
-    public Article ArticleExists(ArticleResource articleCreate)
+    public Utilisateur ArticleExists(UtilisateurResource articleCreate)
     {
         return GetArticles().Where(c => c.Nom.Trim().ToUpper() == articleCreate.Nom.TrimEnd().ToUpper())
             .FirstOrDefault();

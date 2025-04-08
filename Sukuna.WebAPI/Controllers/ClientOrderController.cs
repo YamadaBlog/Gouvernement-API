@@ -23,7 +23,7 @@ public class ClientOrdersController : ControllerBase
     [ProducesResponseType(204)]
     [ProducesResponseType(400)]
 
-    public IActionResult CreateClientOrder([FromBody] ClientOrderResource clientOrderCreate)
+    public IActionResult CreateClientOrder([FromBody] ParticipationResource clientOrderCreate)
     {
         if (clientOrderCreate == null)
             return BadRequest(ModelState);
@@ -40,7 +40,7 @@ public class ClientOrdersController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var clientOrderMap = _mapper.Map<ClientOrder>(clientOrderCreate);
+        var clientOrderMap = _mapper.Map<Participation>(clientOrderCreate);
 
         if (!_clientOrderService.CreateClientOrder(clientOrderMap))
         {
@@ -57,7 +57,7 @@ public class ClientOrdersController : ControllerBase
         if (!_clientOrderService.ClientOrderExistsById(clientOrderId))
             return NotFound();
 
-        var orderLines = _mapper.Map<List<OrderLineResource>>(
+        var orderLines = _mapper.Map<List<CommentaireResource>>(
             _clientOrderService.GetOrderLinesByClientOrder(clientOrderId));
 
         if (!ModelState.IsValid)
@@ -67,14 +67,14 @@ public class ClientOrdersController : ControllerBase
     }
 
     [HttpGet("{clientOrderId}")]
-    [ProducesResponseType(200, Type = typeof(ClientOrder))]
+    [ProducesResponseType(200, Type = typeof(Participation))]
     [ProducesResponseType(400)]
     public IActionResult GetClientOrderById(int clientOrderId)
     {
         if (!_clientOrderService.ClientOrderExistsById(clientOrderId))
             return NotFound();
 
-        var clientOrder = _mapper.Map<ClientOrderResource>(_clientOrderService.GetClientOrderById(clientOrderId));
+        var clientOrder = _mapper.Map<ParticipationResource>(_clientOrderService.GetClientOrderById(clientOrderId));
 
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -83,10 +83,10 @@ public class ClientOrdersController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType(200, Type = typeof(IEnumerable<ClientOrder>))]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<Participation>))]
     public IActionResult GetClientOrders()
     {
-        var clientOrders = _mapper.Map<List<ClientOrderResource>>(_clientOrderService.GetClientOrders());
+        var clientOrders = _mapper.Map<List<ParticipationResource>>(_clientOrderService.GetClientOrders());
 
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -98,7 +98,7 @@ public class ClientOrdersController : ControllerBase
     [ProducesResponseType(400)]
     [ProducesResponseType(204)]
     [ProducesResponseType(404)]
-    public IActionResult UpdateClientOrder(int clientOrderId, [FromBody] ClientOrderResource updatedClientOrder)
+    public IActionResult UpdateClientOrder(int clientOrderId, [FromBody] ParticipationResource updatedClientOrder)
     {
         if (updatedClientOrder == null)
             return BadRequest(ModelState);
@@ -112,7 +112,7 @@ public class ClientOrdersController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest();
 
-        var clientOrderMap = _mapper.Map<ClientOrder>(updatedClientOrder);
+        var clientOrderMap = _mapper.Map<Participation>(updatedClientOrder);
 
         if (!_clientOrderService.UpdateClientOrder(clientOrderMap))
         {

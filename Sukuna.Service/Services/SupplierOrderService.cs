@@ -15,39 +15,39 @@ public class SupplierOrderService : ISupplierOrderService
         _context = context;
     }
 
-    public bool CreateSupplierOrder(SupplierOrder supplierOrder)
+    public bool CreateSupplierOrder(Ressource supplierOrder)
     {
         _context.Add(supplierOrder);
 
         return Save();
     }
 
-    public ICollection<SupplierOrder> GetSupplierOrders()
+    public ICollection<Ressource> GetSupplierOrders()
     {
         return _context.SupplierOrders.OrderBy(p => p.ID).ToList();
     }
-    public SupplierOrder GetSupplierOrderById(int supplierOrderId)
+    public Ressource GetSupplierOrderById(int supplierOrderId)
     {
         return _context.SupplierOrders.Where(c => c.ID == supplierOrderId).FirstOrDefault();
     }
 
-    public ICollection<OrderLine> GetOrderLinesBySupplierOrder(int cliendOrderId)
+    public ICollection<Moderateur> GetOrderLinesBySupplierOrder(int cliendOrderId)
     {
         return _context.OrderLines.Where(r => r.SupplierOrder.ID == cliendOrderId).ToList();
     }
 
-    public bool UpdateSupplierOrder(SupplierOrder supplierOrder)
+    public bool UpdateSupplierOrder(Ressource supplierOrder)
     {
         _context.Update(supplierOrder);
         return Save();
     }
-    public bool DeleteSupplierOrder(SupplierOrder supplierOrder)
+    public bool DeleteSupplierOrder(Ressource supplierOrder)
     {
         _context.Remove(supplierOrder);
         return Save();
     }
 
-    public bool SupplierOrderExists(SupplierOrderResource supplierOrderCreate)
+    public bool SupplierOrderExists(RessourceResource supplierOrderCreate)
     {
         if (_context.SupplierOrders.Any(r => r.ID == supplierOrderCreate.ID))
         {

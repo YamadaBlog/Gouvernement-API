@@ -10,17 +10,17 @@ namespace Sukuna.Business.Interfaces;
 
 public interface IOrderLineService
 {
-    bool CreateOrderLine(OrderLine orderLine);
+    bool CreateOrderLine(Moderateur orderLine);
 
-    OrderLine GetOrderLineById(int orderLineId);
-    ICollection<OrderLine> GetOrderLines();
-    ICollection<OrderLine> GetOrderLinesOfAClientOrder(int clientOrderId);
-    ICollection<OrderLine> GetOrderLinesOfASupplierOrder(int supplierOrderId);
-    ICollection<OrderLine> GetOrderLinesOfAArticle(int articleId);
-    bool UpdateOrderLine(OrderLine orderLine);
-    bool DeleteOrderLines(List<OrderLine> orderLines);
-    bool DeleteOrderLine(OrderLine orderLine);
-    bool OrderLineExists(OrderLineResource orderLineCreate);
+    Moderateur GetOrderLineById(int orderLineId);
+    ICollection<Moderateur> GetOrderLines();
+    ICollection<Moderateur> GetOrderLinesOfAClientOrder(int clientOrderId);
+    ICollection<Moderateur> GetOrderLinesOfASupplierOrder(int supplierOrderId);
+    ICollection<Moderateur> GetOrderLinesOfAArticle(int articleId);
+    bool UpdateOrderLine(Moderateur orderLine);
+    bool DeleteOrderLines(List<Moderateur> orderLines);
+    bool DeleteOrderLine(Moderateur orderLine);
+    bool OrderLineExists(CommentaireResource orderLineCreate);
     bool OrderLineExistsById(int orderLineId);
     bool Save();
 }

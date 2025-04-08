@@ -10,13 +10,13 @@ namespace Sukuna.Business.Interfaces;
 
 public interface IClientOrderService
 {
-    bool CreateClientOrder(ClientOrder clientOrder);
-    ClientOrder GetClientOrderById(int clientOrderId);
-    ICollection<ClientOrder> GetClientOrders();
-    ICollection<OrderLine> GetOrderLinesByClientOrder(int cliendOrderId);
-    bool UpdateClientOrder(ClientOrder clientOrder);
-    bool DeleteClientOrder(ClientOrder clientOrder);
-    bool ClientOrderExists(ClientOrderResource clientOrderCreate);
+    bool CreateClientOrder(Participation clientOrder);
+    Participation GetClientOrderById(int clientOrderId);
+    ICollection<Participation> GetClientOrders();
+    ICollection<Moderateur> GetOrderLinesByClientOrder(int cliendOrderId);
+    bool UpdateClientOrder(Participation clientOrder);
+    bool DeleteClientOrder(Participation clientOrder);
+    bool ClientOrderExists(ParticipationResource clientOrderCreate);
     bool ClientOrderExistsById(int clientOrderId);
 
     bool Save();

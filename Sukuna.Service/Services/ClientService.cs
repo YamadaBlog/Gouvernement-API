@@ -15,43 +15,43 @@ public class ClientService : IClientService
         _context = context;
     }
 
-    public bool CreateClient(Client client)
+    public bool CreateClient(Evenement client)
     {
         _context.Add(client);
 
         return Save();
     }
 
-    public ICollection<Client> GetClients()
+    public ICollection<Evenement> GetClients()
     {
         return _context.Clients.OrderBy(p => p.ID).ToList();
     }
-    public Client GetClientById(int clientId)
+    public Evenement GetClientById(int clientId)
     {
         return _context.Clients.Where(c => c.ID == clientId).FirstOrDefault();
     }
 
-    public Client GetAuthauthClient(string clientEmail, string clientMpd) {
+    public Evenement GetAuthauthClient(string clientEmail, string clientMpd) {
         return _context.Clients.Where(c => c.Email == clientEmail && c.MotDePasseHashe == clientMpd).FirstOrDefault();
     }
 
-    public ICollection<ClientOrder> GetClientOrdersByClient(int clientId)
+    public ICollection<Participation> GetClientOrdersByClient(int clientId)
     {
         return _context.ClientOrders.Where(r => r.Client.ID == clientId).ToList();
     }
 
-    public bool UpdateClient(Client client)
+    public bool UpdateClient(Evenement client)
     {
         _context.Update(client);
         return Save();
     }
-    public bool DeleteClient(Client client)
+    public bool DeleteClient(Evenement client)
     {
         _context.Remove(client);
         return Save();
     }
 
-    public bool ClientExists(ClientResource clientCreate)
+    public bool ClientExists(ModerateurResource clientCreate)
     {
         return _context.Clients.Any(r => r.ID == clientCreate.ID);
     }

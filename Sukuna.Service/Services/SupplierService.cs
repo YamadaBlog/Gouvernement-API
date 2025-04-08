@@ -15,38 +15,38 @@ public class SupplierService : ISupplierService
         _context = context;
     }
 
-    public bool CreateSupplier(Supplier supplier)
+    public bool CreateSupplier(Commentaire supplier)
     {
         _context.Add(supplier);
 
         return Save();
     }
 
-    public ICollection<Supplier> GetSuppliers()
+    public ICollection<Commentaire> GetSuppliers()
     {
         return _context.Suppliers.OrderBy(p => p.ID).ToList();
     }
-    public ICollection<Article> GetArticlesBySupplier(int supplierId)
+    public ICollection<Utilisateur> GetArticlesBySupplier(int supplierId)
     {
         return _context.Articles.Where(r => r.Supplier.ID == supplierId).ToList();
     }
-    public Supplier GetSupplierById(int supplierId)
+    public Commentaire GetSupplierById(int supplierId)
     {
         return _context.Suppliers.Where(c => c.ID == supplierId).FirstOrDefault();
     }
 
-    public bool UpdateSupplier(Supplier supplier)
+    public bool UpdateSupplier(Commentaire supplier)
     {
         _context.Update(supplier);
         return Save();
     }
-    public bool DeleteSupplier(Supplier supplier)
+    public bool DeleteSupplier(Commentaire supplier)
     {
         _context.Remove(supplier);
         return Save();
     }
 
-    public Supplier SupplierExists(SupplierResource supplierCreate)
+    public Commentaire SupplierExists(InteractionResource supplierCreate)
     {
         return GetSuppliers().Where(c => c.Nom.Trim().ToUpper() == supplierCreate.Nom.TrimEnd().ToUpper())
             .FirstOrDefault();

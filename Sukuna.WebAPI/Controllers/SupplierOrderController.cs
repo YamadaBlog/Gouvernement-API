@@ -23,7 +23,7 @@ public class SupplierOrdersController : ControllerBase
     [ProducesResponseType(204)]
     [ProducesResponseType(400)]
 
-    public IActionResult CreateSupplierOrder([FromBody] SupplierOrderResource supplierOrderCreate)
+    public IActionResult CreateSupplierOrder([FromBody] RessourceResource supplierOrderCreate)
     {
         if (supplierOrderCreate == null)
             return BadRequest(ModelState);
@@ -40,7 +40,7 @@ public class SupplierOrdersController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var supplierOrderMap = _mapper.Map<SupplierOrder>(supplierOrderCreate);
+        var supplierOrderMap = _mapper.Map<Ressource>(supplierOrderCreate);
 
         if (!_supplierOrderService.CreateSupplierOrder(supplierOrderMap))
         {
@@ -57,7 +57,7 @@ public class SupplierOrdersController : ControllerBase
         if (!_supplierOrderService.SupplierOrderExistsById(supplierOrderId))
             return NotFound();
 
-        var orderLines = _mapper.Map<List<OrderLineResource>>(
+        var orderLines = _mapper.Map<List<CommentaireResource>>(
             _supplierOrderService.GetOrderLinesBySupplierOrder(supplierOrderId));
 
         if (!ModelState.IsValid)
@@ -67,14 +67,14 @@ public class SupplierOrdersController : ControllerBase
     }
 
     [HttpGet("{supplierOrderId}")]
-    [ProducesResponseType(200, Type = typeof(SupplierOrder))]
+    [ProducesResponseType(200, Type = typeof(Ressource))]
     [ProducesResponseType(400)]
     public IActionResult GetSupplierOrderById(int supplierOrderId)
     {
         if (!_supplierOrderService.SupplierOrderExistsById(supplierOrderId))
             return NotFound();
 
-        var supplierOrder = _mapper.Map<SupplierOrderResource>(_supplierOrderService.GetSupplierOrderById(supplierOrderId));
+        var supplierOrder = _mapper.Map<RessourceResource>(_supplierOrderService.GetSupplierOrderById(supplierOrderId));
 
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -83,10 +83,10 @@ public class SupplierOrdersController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType(200, Type = typeof(IEnumerable<SupplierOrder>))]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<Ressource>))]
     public IActionResult GetSupplierOrders()
     {
-        var supplierOrders = _mapper.Map<List<SupplierOrderResource>>(_supplierOrderService.GetSupplierOrders());
+        var supplierOrders = _mapper.Map<List<RessourceResource>>(_supplierOrderService.GetSupplierOrders());
 
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -98,7 +98,7 @@ public class SupplierOrdersController : ControllerBase
     [ProducesResponseType(400)]
     [ProducesResponseType(204)]
     [ProducesResponseType(404)]
-    public IActionResult UpdateSupplierOrder(int supplierOrderId, [FromBody] SupplierOrderResource updatedSupplierOrder)
+    public IActionResult UpdateSupplierOrder(int supplierOrderId, [FromBody] RessourceResource updatedSupplierOrder)
     {
         if (updatedSupplierOrder == null)
             return BadRequest(ModelState);
@@ -112,7 +112,7 @@ public class SupplierOrdersController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest();
 
-        var supplierOrderMap = _mapper.Map<SupplierOrder>(updatedSupplierOrder);
+        var supplierOrderMap = _mapper.Map<Ressource>(updatedSupplierOrder);
 
         if (!_supplierOrderService.UpdateSupplierOrder(supplierOrderMap))
         {

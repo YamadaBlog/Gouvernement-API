@@ -9,56 +9,56 @@ namespace Sukuna.DataAccess.Data
         {
         }
 
-        public DbSet<Article> Articles { get; set; }
-        public DbSet<Client> Clients { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<Supplier> Suppliers { get; set; }
-        public DbSet<ClientOrder> ClientOrders { get; set; }
-        public DbSet<OrderLine> OrderLines { get; set; }
-        public DbSet<SupplierOrder> SupplierOrders { get; set; }
-        public DbSet<TvaType> TvaTypes { get; set; }
+        public DbSet<Utilisateur> Articles { get; set; }
+        public DbSet<Evenement> Clients { get; set; }
+        public DbSet<Interaction> Users { get; set; }
+        public DbSet<Commentaire> Suppliers { get; set; }
+        public DbSet<Participation> ClientOrders { get; set; }
+        public DbSet<Moderateur> OrderLines { get; set; }
+        public DbSet<Ressource> SupplierOrders { get; set; }
+        public DbSet<Badge> TvaTypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configurer la relation entre SupplierOrder et OrderLine
-            modelBuilder.Entity<Article>()
+            // Configurer la relation entre Ressource et Moderateur
+            modelBuilder.Entity<Utilisateur>()
                 .HasOne(p => p.TvaType)
                 .WithMany(pc => pc.Articles)
                 .HasForeignKey(p => p.TvaTypeID);
-            modelBuilder.Entity<Article>()
+            modelBuilder.Entity<Utilisateur>()
                 .HasOne(p => p.Supplier)
                 .WithMany(pc => pc.Articles)
                 .HasForeignKey(p => p.SupplierID);
 
-            // Configurer la relation entre SupplierOrder et OrderLine
-            modelBuilder.Entity<OrderLine>()
+            // Configurer la relation entre Ressource et Moderateur
+            modelBuilder.Entity<Moderateur>()
                 .HasOne(c => c.ClientOrder)
                 .WithMany(pc => pc.OrderLines)
                 .HasForeignKey(p => p.ClientOrderID);
-            modelBuilder.Entity<OrderLine>()
+            modelBuilder.Entity<Moderateur>()
                 .HasOne(c => c.SupplierOrder)
                 .WithMany(pc => pc.OrderLines)
                 .HasForeignKey(p => p.SupplierOrderID);
-            modelBuilder.Entity<OrderLine>()
+            modelBuilder.Entity<Moderateur>()
                 .HasOne(c => c.Article)
                 .WithMany(pc => pc.OrderLines)
                 .HasForeignKey(p => p.ArticleID);
 
-            // Configurer la relation entre SupplierOrder et OrderLine
-            modelBuilder.Entity<SupplierOrder>()
+            // Configurer la relation entre Ressource et Moderateur
+            modelBuilder.Entity<Ressource>()
                 .HasOne(p => p.User)
                 .WithMany(pc => pc.SupplierOrders)
                 .HasForeignKey(p => p.UserID);
 
-            modelBuilder.Entity<SupplierOrder>()
+            modelBuilder.Entity<Ressource>()
            .HasOne(p => p.Supplier)
            .WithMany(pc => pc.SupplierOrders)
            .HasForeignKey(c => c.SupplierID);
 
-            // Configurer la relation entre SupplierOrder et OrderLine
-            modelBuilder.Entity<ClientOrder>()
+            // Configurer la relation entre Ressource et Moderateur
+            modelBuilder.Entity<Participation>()
                 .HasOne(p => p.Client)
                 .WithMany(pc => pc.ClientOrders)
                 .HasForeignKey(p => p.ClientID);

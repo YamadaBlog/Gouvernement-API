@@ -24,7 +24,7 @@ public class ArticlesController : ControllerBase
     [ProducesResponseType(204)]
     [ProducesResponseType(400)]
 
-    public IActionResult CreateArticle([FromBody] ArticleResource articleCreate)
+    public IActionResult CreateArticle([FromBody] UtilisateurResource articleCreate)
     {
         if (articleCreate == null)
             return BadRequest(ModelState);
@@ -41,7 +41,7 @@ public class ArticlesController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var articleMap = _mapper.Map<Article>(articleCreate);
+        var articleMap = _mapper.Map<Utilisateur>(articleCreate);
 
         if (!_articleService.CreateArticle(articleMap))
         {
@@ -58,7 +58,7 @@ public class ArticlesController : ControllerBase
         if (!_articleService.ArticleExistsById(articleId))
             return NotFound();
 
-        var orderLines = _mapper.Map<List<OrderLineResource>>(
+        var orderLines = _mapper.Map<List<CommentaireResource>>(
             _articleService.GetOrderLinesByArticle(articleId));
 
         if (!ModelState.IsValid)
@@ -68,12 +68,12 @@ public class ArticlesController : ControllerBase
     }
 
     [HttpGet("supplier/{supplierId}")]
-    [ProducesResponseType(200, Type = typeof(Article))]
+    [ProducesResponseType(200, Type = typeof(Utilisateur))]
     [ProducesResponseType(400)]
 
     public IActionResult GetArticlesOfASupplier(int supplierId)
     {
-        var articles = _mapper.Map<List<ArticleResource>>(_articleService.GetArticlesOfASupplier(supplierId));
+        var articles = _mapper.Map<List<UtilisateurResource>>(_articleService.GetArticlesOfASupplier(supplierId));
 
         if (!ModelState.IsValid)
             return BadRequest();
@@ -82,14 +82,14 @@ public class ArticlesController : ControllerBase
     }
 
     [HttpGet("{articleId}")]
-    [ProducesResponseType(200, Type = typeof(Article))]
+    [ProducesResponseType(200, Type = typeof(Utilisateur))]
     [ProducesResponseType(400)]
     public IActionResult GetArticleById(int articleId)
     {
         if (!_articleService.ArticleExistsById(articleId))
             return NotFound();
 
-        var article = _mapper.Map<ArticleResource>(_articleService.GetArticleById(articleId));
+        var article = _mapper.Map<UtilisateurResource>(_articleService.GetArticleById(articleId));
 
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -98,10 +98,10 @@ public class ArticlesController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType(200, Type = typeof(IEnumerable<Article>))]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<Utilisateur>))]
     public IActionResult GetArticles()
     {
-        var articles = _mapper.Map<List<ArticleResource>>(_articleService.GetArticles());
+        var articles = _mapper.Map<List<UtilisateurResource>>(_articleService.GetArticles());
 
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -113,7 +113,7 @@ public class ArticlesController : ControllerBase
     [ProducesResponseType(400)]
     [ProducesResponseType(204)]
     [ProducesResponseType(404)]
-    public IActionResult UpdateArticle(int articleId, [FromBody] ArticleResource updatedArticle)
+    public IActionResult UpdateArticle(int articleId, [FromBody] UtilisateurResource updatedArticle)
     {
         if (updatedArticle == null)
             return BadRequest(ModelState);
@@ -127,7 +127,7 @@ public class ArticlesController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest();
 
-        var articleMap = _mapper.Map<Article>(updatedArticle);
+        var articleMap = _mapper.Map<Utilisateur>(updatedArticle);
 
         if (!_articleService.UpdateArticle(articleMap))
         {

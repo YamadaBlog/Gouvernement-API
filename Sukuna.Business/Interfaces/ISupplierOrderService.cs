@@ -10,13 +10,13 @@ namespace Sukuna.Business.Interfaces;
 
 public interface ISupplierOrderService
 {
-    bool CreateSupplierOrder(SupplierOrder supplierOrder);
-    SupplierOrder GetSupplierOrderById(int supplierOrderId);
-    ICollection<SupplierOrder> GetSupplierOrders();
-    ICollection<OrderLine> GetOrderLinesBySupplierOrder(int cliendOrderId);
-    bool UpdateSupplierOrder(SupplierOrder supplierOrder);
-    bool DeleteSupplierOrder(SupplierOrder supplierOrder);
-    bool SupplierOrderExists(SupplierOrderResource supplierOrderCreate);
+    bool CreateSupplierOrder(Ressource supplierOrder);
+    Ressource GetSupplierOrderById(int supplierOrderId);
+    ICollection<Ressource> GetSupplierOrders();
+    ICollection<Moderateur> GetOrderLinesBySupplierOrder(int cliendOrderId);
+    bool UpdateSupplierOrder(Ressource supplierOrder);
+    bool DeleteSupplierOrder(Ressource supplierOrder);
+    bool SupplierOrderExists(RessourceResource supplierOrderCreate);
     bool SupplierOrderExistsById(int supplierOrderId);
 
     bool Save();

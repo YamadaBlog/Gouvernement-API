@@ -10,14 +10,14 @@ namespace Sukuna.Business.Interfaces;
 
 public interface IClientService
 {
-    bool CreateClient(Client client);
-    Client GetClientById(int clientId);
-    Client GetAuthauthClient(string clientEmail, string clientMpd);
-    ICollection<Client> GetClients();
-    ICollection<ClientOrder> GetClientOrdersByClient(int clientId);
-    bool UpdateClient(Client client);
-    bool DeleteClient(Client client);
-    bool ClientExists(ClientResource clientCreate);
+    bool CreateClient(Evenement client);
+    Evenement GetClientById(int clientId);
+    Evenement GetAuthauthClient(string clientEmail, string clientMpd);
+    ICollection<Evenement> GetClients();
+    ICollection<Participation> GetClientOrdersByClient(int clientId);
+    bool UpdateClient(Evenement client);
+    bool DeleteClient(Evenement client);
+    bool ClientExists(ModerateurResource clientCreate);
     bool ClientExistsById(int clientId);
 
     bool Save();

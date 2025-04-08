@@ -24,7 +24,7 @@ public class TvaTypesController : ControllerBase
     [ProducesResponseType(204)]
     [ProducesResponseType(400)]
 
-    public IActionResult CreateTvaType([FromBody] TvaTypeResource tvaTypeCreate)
+    public IActionResult CreateTvaType([FromBody] BadgeResource tvaTypeCreate)
     {
         if (tvaTypeCreate == null)
             return BadRequest(ModelState);
@@ -41,7 +41,7 @@ public class TvaTypesController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var tvaTypeMap = _mapper.Map<TvaType>(tvaTypeCreate);
+        var tvaTypeMap = _mapper.Map<Badge>(tvaTypeCreate);
 
         if (!_tvaTypeService.CreateTvaType(tvaTypeMap))
         {
@@ -53,14 +53,14 @@ public class TvaTypesController : ControllerBase
     }
 
     [HttpGet("{tvaTypeId}")]
-    [ProducesResponseType(200, Type = typeof(TvaType))]
+    [ProducesResponseType(200, Type = typeof(Badge))]
     [ProducesResponseType(400)]
     public IActionResult GetTvaTypeById(int tvaTypeId)
     {
         if (!_tvaTypeService.TvaTypeExistsById(tvaTypeId))
             return NotFound();
 
-        var tvaType = _mapper.Map<TvaTypeResource>(_tvaTypeService.GetTvaTypeById(tvaTypeId));
+        var tvaType = _mapper.Map<BadgeResource>(_tvaTypeService.GetTvaTypeById(tvaTypeId));
 
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -69,10 +69,10 @@ public class TvaTypesController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType(200, Type = typeof(IEnumerable<TvaType>))]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<Badge>))]
     public IActionResult GetTvaTypes()
     {
-        var tvaTypes = _mapper.Map<List<TvaTypeResource>>(_tvaTypeService.GetTvaTypes());
+        var tvaTypes = _mapper.Map<List<BadgeResource>>(_tvaTypeService.GetTvaTypes());
 
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -84,7 +84,7 @@ public class TvaTypesController : ControllerBase
     [ProducesResponseType(400)]
     [ProducesResponseType(204)]
     [ProducesResponseType(404)]
-    public IActionResult UpdateTvaType(int tvaTypeId, [FromBody] TvaTypeResource updatedTvaType)
+    public IActionResult UpdateTvaType(int tvaTypeId, [FromBody] BadgeResource updatedTvaType)
     {
         if (updatedTvaType == null)
             return BadRequest(ModelState);
@@ -98,7 +98,7 @@ public class TvaTypesController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest();
 
-        var tvaTypeMap = _mapper.Map<TvaType>(updatedTvaType);
+        var tvaTypeMap = _mapper.Map<Badge>(updatedTvaType);
 
         if (!_tvaTypeService.UpdateTvaType(tvaTypeMap))
         {

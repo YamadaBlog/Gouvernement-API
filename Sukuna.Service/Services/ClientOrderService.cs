@@ -15,39 +15,39 @@ public class ClientOrderService : IClientOrderService
         _context = context;
     }
 
-    public bool CreateClientOrder(ClientOrder clientOrder)
+    public bool CreateClientOrder(Participation clientOrder)
     {
         _context.Add(clientOrder);
 
         return Save();
     }
 
-    public ICollection<ClientOrder> GetClientOrders()
+    public ICollection<Participation> GetClientOrders()
     {
         return _context.ClientOrders.OrderBy(p => p.ID).ToList();
     }
-    public ClientOrder GetClientOrderById(int clientOrderId)
+    public Participation GetClientOrderById(int clientOrderId)
     {
         return _context.ClientOrders.Where(c => c.ID == clientOrderId).FirstOrDefault();
     }
 
-    public ICollection<OrderLine> GetOrderLinesByClientOrder(int cliendOrderId)
+    public ICollection<Moderateur> GetOrderLinesByClientOrder(int cliendOrderId)
     {
         return _context.OrderLines.Where(r => r.ClientOrder.ID == cliendOrderId).ToList();
     }
 
-    public bool UpdateClientOrder(ClientOrder clientOrder)
+    public bool UpdateClientOrder(Participation clientOrder)
     {
         _context.Update(clientOrder);
         return Save();
     }
-    public bool DeleteClientOrder(ClientOrder clientOrder)
+    public bool DeleteClientOrder(Participation clientOrder)
     {
         _context.Remove(clientOrder);
         return Save();
     }
 
-    public bool ClientOrderExists(ClientOrderResource clientOrderCreate)
+    public bool ClientOrderExists(ParticipationResource clientOrderCreate)
     {
         if (_context.ClientOrders.Any(r => r.ID == clientOrderCreate.ID))
         {

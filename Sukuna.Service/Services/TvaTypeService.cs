@@ -15,34 +15,34 @@ public class TvaTypeService : ITvaTypeService
         _context = context;
     }
 
-    public bool CreateTvaType(TvaType tvaType)
+    public bool CreateTvaType(Badge tvaType)
     {
         _context.Add(tvaType);
 
         return Save();
     }
 
-    public ICollection<TvaType> GetTvaTypes()
+    public ICollection<Badge> GetTvaTypes()
     {
         return _context.TvaTypes.OrderBy(p => p.ID).ToList();
     }
-    public TvaType GetTvaTypeById(int tvaTypeId)
+    public Badge GetTvaTypeById(int tvaTypeId)
     {
         return _context.TvaTypes.Where(c => c.ID == tvaTypeId).FirstOrDefault();
     }
 
-    public bool UpdateTvaType(TvaType tvaType)
+    public bool UpdateTvaType(Badge tvaType)
     {
         _context.Update(tvaType);
         return Save();
     }
-    public bool DeleteTvaType(TvaType tvaType)
+    public bool DeleteTvaType(Badge tvaType)
     {
         _context.Remove(tvaType);
         return Save();
     }
 
-    public TvaType TvaTypeExists(TvaTypeResource tvaTypeCreate)
+    public Badge TvaTypeExists(BadgeResource tvaTypeCreate)
     {
         return GetTvaTypes().Where(c => c.Nom.Trim().ToUpper() == tvaTypeCreate.Nom.TrimEnd().ToUpper())
             .FirstOrDefault();

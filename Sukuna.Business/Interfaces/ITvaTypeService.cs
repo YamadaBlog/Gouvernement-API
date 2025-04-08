@@ -10,12 +10,12 @@ namespace Sukuna.Business.Interfaces;
 
 public interface ITvaTypeService
 {
-    bool CreateTvaType(TvaType tvaType);
-    TvaType GetTvaTypeById(int tvaTypeId);
-    ICollection<TvaType> GetTvaTypes();
-    bool UpdateTvaType(TvaType tvaType);
-    bool DeleteTvaType(TvaType tvaType);
-    TvaType TvaTypeExists(TvaTypeResource tvaTypeCreate);
+    bool CreateTvaType(Badge tvaType);
+    Badge GetTvaTypeById(int tvaTypeId);
+    ICollection<Badge> GetTvaTypes();
+    bool UpdateTvaType(Badge tvaType);
+    bool DeleteTvaType(Badge tvaType);
+    Badge TvaTypeExists(BadgeResource tvaTypeCreate);
     bool TvaTypeExistsById(int tvaTypeId);
 
     bool Save();
