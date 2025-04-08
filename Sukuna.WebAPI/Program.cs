@@ -55,11 +55,11 @@ namespace Sukuna.WebAPI
                         services.AddTransient<Seed>();
                         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-                        services.AddScoped<IArticleService, ArticleService>();
-                        services.AddScoped<IClientService, ClientService>();
-                        services.AddScoped<IUserService, UserService>();
+                        services.AddScoped<IParticipationService, ArticleService>();
+                        services.AddScoped<IModerateurService, ClientService>();
+                        services.AddScoped<IUtilisateurService, UserService>();
                         services.AddScoped<ITvaTypeService, TvaTypeService>();
-                        services.AddScoped<IOrderLineService, OrderLineService>();
+                        services.AddScoped<ICommentaireService, OrderLineService>();
                         services.AddScoped<ISupplierService, SupplierService>();
                         services.AddScoped<ISupplierOrderService, SupplierOrderService>();
                         services.AddScoped<IClientOrderService, ClientOrderService>();

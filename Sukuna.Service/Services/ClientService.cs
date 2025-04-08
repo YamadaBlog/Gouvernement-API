@@ -6,7 +6,7 @@ using Sukuna.DataAccess.Data;
 
 namespace Sukuna.Service.Services;
 
-public class ClientService : IClientService
+public class ClientService : IModerateurService
 {
     private readonly DataContext _context;
 

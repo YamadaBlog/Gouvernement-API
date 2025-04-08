@@ -6,7 +6,7 @@ using Sukuna.DataAccess.Data;
 
 namespace Sukuna.Service.Services;
 
-public class ArticleService : IArticleService
+public class ArticleService : IParticipationService
 {
     private readonly DataContext _context;
 

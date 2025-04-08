@@ -6,7 +6,7 @@ using Sukuna.DataAccess.Data;
 
 namespace Sukuna.Service.Services;
 
-public class UserService : IUserService
+public class UserService : IUtilisateurService
 {
     private readonly DataContext _context;
 
