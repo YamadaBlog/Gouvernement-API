@@ -24,7 +24,7 @@ public class SuppliersController : ControllerBase
     [ProducesResponseType(204)]
     [ProducesResponseType(400)]
 
-    public IActionResult CreateSupplier([FromBody] SupplierResource supplierCreate)
+    public IActionResult CreateSupplier([FromBody] InteractionResource supplierCreate)
     {
         if (supplierCreate == null)
             return BadRequest(ModelState);
@@ -41,7 +41,7 @@ public class SuppliersController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var supplierMap = _mapper.Map<Supplier>(supplierCreate);
+        var supplierMap = _mapper.Map<Commentaire>(supplierCreate);
 
         if (!_supplierService.CreateSupplier(supplierMap))
         {
@@ -58,7 +58,7 @@ public class SuppliersController : ControllerBase
         if (!_supplierService.SupplierExistsById(supplierId))
             return NotFound();
 
-        var articles = _mapper.Map<List<ArticleResource>>(
+        var articles = _mapper.Map<List<UtilisateurResource>>(
             _supplierService.GetArticlesBySupplier(supplierId));
 
         if (!ModelState.IsValid)
@@ -68,14 +68,14 @@ public class SuppliersController : ControllerBase
     }
 
     [HttpGet("{supplierId}")]
-    [ProducesResponseType(200, Type = typeof(Supplier))]
+    [ProducesResponseType(200, Type = typeof(Commentaire))]
     [ProducesResponseType(400)]
     public IActionResult GetSupplierById(int supplierId)
     {
         if (!_supplierService.SupplierExistsById(supplierId))
             return NotFound();
 
-        var supplier = _mapper.Map<SupplierResource>(_supplierService.GetSupplierById(supplierId));
+        var supplier = _mapper.Map<InteractionResource>(_supplierService.GetSupplierById(supplierId));
 
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -84,10 +84,10 @@ public class SuppliersController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType(200, Type = typeof(IEnumerable<Supplier>))]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<Commentaire>))]
     public IActionResult GetSuppliers()
     {
-        var suppliers = _mapper.Map<List<SupplierResource>>(_supplierService.GetSuppliers());
+        var suppliers = _mapper.Map<List<InteractionResource>>(_supplierService.GetSuppliers());
 
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -99,7 +99,7 @@ public class SuppliersController : ControllerBase
     [ProducesResponseType(400)]
     [ProducesResponseType(204)]
     [ProducesResponseType(404)]
-    public IActionResult UpdateSupplier(int supplierId, [FromBody] SupplierResource updatedSupplier)
+    public IActionResult UpdateSupplier(int supplierId, [FromBody] InteractionResource updatedSupplier)
     {
         if (updatedSupplier == null)
             return BadRequest(ModelState);
@@ -113,7 +113,7 @@ public class SuppliersController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest();
 
-        var supplierMap = _mapper.Map<Supplier>(updatedSupplier);
+        var supplierMap = _mapper.Map<Commentaire>(updatedSupplier);
 
         if (!_supplierService.UpdateSupplier(supplierMap))
         {

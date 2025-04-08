@@ -26,7 +26,7 @@ public class OrderLinesController : ControllerBase
     [ProducesResponseType(204)]
     [ProducesResponseType(400)]
 
-    public IActionResult CreateOrderLine([FromBody] OrderLineResource orderLineCreate)
+    public IActionResult CreateOrderLine([FromBody] CommentaireResource orderLineCreate)
     {
         if (orderLineCreate == null)
             return BadRequest(ModelState);
@@ -43,7 +43,7 @@ public class OrderLinesController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var orderLineMap = _mapper.Map<OrderLine>(orderLineCreate);
+        var orderLineMap = _mapper.Map<Moderateur>(orderLineCreate);
 
         if (!_orderLineService.CreateOrderLine(orderLineMap))
         {
@@ -55,14 +55,14 @@ public class OrderLinesController : ControllerBase
     }
 
     [HttpGet("{orderLineId}")]
-    [ProducesResponseType(200, Type = typeof(OrderLine))]
+    [ProducesResponseType(200, Type = typeof(Moderateur))]
     [ProducesResponseType(400)]
     public IActionResult GetOrderLine(int orderLineId)
     {
         if (!_orderLineService.OrderLineExistsById(orderLineId))
             return NotFound();
 
-        var orderLine = _mapper.Map<OrderLineResource>(_orderLineService.GetOrderLineById(orderLineId));
+        var orderLine = _mapper.Map<CommentaireResource>(_orderLineService.GetOrderLineById(orderLineId));
 
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -71,12 +71,12 @@ public class OrderLinesController : ControllerBase
     }
 
     [HttpGet("clientOrder/{clientOrderId}")]
-    [ProducesResponseType(200, Type = typeof(OrderLine))]
+    [ProducesResponseType(200, Type = typeof(Moderateur))]
     [ProducesResponseType(400)]
 
     public IActionResult GetOrderLinesForAClientOrder(int clientOrderId)
     {
-        var orderLines = _mapper.Map<List<OrderLineResource>>(_orderLineService.GetOrderLinesOfAClientOrder(clientOrderId));
+        var orderLines = _mapper.Map<List<CommentaireResource>>(_orderLineService.GetOrderLinesOfAClientOrder(clientOrderId));
 
         if (!ModelState.IsValid)
             return BadRequest();
@@ -85,12 +85,12 @@ public class OrderLinesController : ControllerBase
     }
 
     [HttpGet("supplierOrder/{supplierOrderId}")]
-    [ProducesResponseType(200, Type = typeof(OrderLine))]
+    [ProducesResponseType(200, Type = typeof(Moderateur))]
     [ProducesResponseType(400)]
 
     public IActionResult GetOrderLinesForASupplierOrder(int supplierOrderId)
     {
-        var orderLines = _mapper.Map<List<OrderLineResource>>(_orderLineService.GetOrderLinesOfASupplierOrder(supplierOrderId));
+        var orderLines = _mapper.Map<List<CommentaireResource>>(_orderLineService.GetOrderLinesOfASupplierOrder(supplierOrderId));
 
         if (!ModelState.IsValid)
             return BadRequest();
@@ -99,12 +99,12 @@ public class OrderLinesController : ControllerBase
     }
 
     [HttpGet("article/{articleId}")]
-    [ProducesResponseType(200, Type = typeof(OrderLine))]
+    [ProducesResponseType(200, Type = typeof(Moderateur))]
     [ProducesResponseType(400)]
 
     public IActionResult GetOrderLinesForAArticle(int articleId)
     {
-        var orderLines = _mapper.Map<List<OrderLineResource>>(_orderLineService.GetOrderLinesOfAArticle(articleId));
+        var orderLines = _mapper.Map<List<CommentaireResource>>(_orderLineService.GetOrderLinesOfAArticle(articleId));
 
         if (!ModelState.IsValid)
             return BadRequest();
@@ -116,7 +116,7 @@ public class OrderLinesController : ControllerBase
     [ProducesResponseType(400)]
     [ProducesResponseType(204)]
     [ProducesResponseType(404)]
-    public IActionResult UpdateOrderLine(int orderLineId, [FromBody] OrderLineResource updatedOrderLine)
+    public IActionResult UpdateOrderLine(int orderLineId, [FromBody] CommentaireResource updatedOrderLine)
     {
         if (updatedOrderLine == null)
             return BadRequest(ModelState);
@@ -130,7 +130,7 @@ public class OrderLinesController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest();
 
-        var orderLineMap = _mapper.Map<OrderLine>(updatedOrderLine);
+        var orderLineMap = _mapper.Map<Moderateur>(updatedOrderLine);
 
         if (!_orderLineService.UpdateOrderLine(orderLineMap))
         {

@@ -23,7 +23,7 @@ public class ClientsController : ControllerBase
     [ProducesResponseType(204)]
     [ProducesResponseType(400)]
 
-    public IActionResult CreateClient([FromBody] ClientResource clientCreate)
+    public IActionResult CreateClient([FromBody] ModerateurResource clientCreate)
     {
         if (clientCreate == null)
             return BadRequest(ModelState);
@@ -40,7 +40,7 @@ public class ClientsController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var clientMap = _mapper.Map<Client>(clientCreate);
+        var clientMap = _mapper.Map<Evenement>(clientCreate);
 
         if (!_clientService.CreateClient(clientMap))
         {
@@ -57,7 +57,7 @@ public class ClientsController : ControllerBase
         if (!_clientService.ClientExistsById(clientId))
             return NotFound();
 
-        var clientOrders = _mapper.Map<List<ClientOrderResource>>(
+        var clientOrders = _mapper.Map<List<ParticipationResource>>(
             _clientService.GetClientOrdersByClient(clientId));
 
         if (!ModelState.IsValid)
@@ -67,14 +67,14 @@ public class ClientsController : ControllerBase
     }
 
     [HttpGet("{clientId}")]
-    [ProducesResponseType(200, Type = typeof(Client))]
+    [ProducesResponseType(200, Type = typeof(Evenement))]
     [ProducesResponseType(400)]
     public IActionResult GetClientById(int clientId)
     {
         if (!_clientService.ClientExistsById(clientId))
             return NotFound();
 
-        var client = _mapper.Map<ClientResource>(_clientService.GetClientById(clientId));
+        var client = _mapper.Map<ModerateurResource>(_clientService.GetClientById(clientId));
 
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -83,7 +83,7 @@ public class ClientsController : ControllerBase
     }
 
     [HttpPost("{clientEmail},{clientMdp}")]
-    [ProducesResponseType(200, Type = typeof(ClientResource))]
+    [ProducesResponseType(200, Type = typeof(ModerateurResource))]
     [ProducesResponseType(400)]
     [ProducesResponseType(401)]
     public IActionResult GetAuthauthClient(string clientEmail, string clientMdp)
@@ -93,16 +93,16 @@ public class ClientsController : ControllerBase
         if (client == null)
             return Unauthorized(); // L'authentification a échoué
 
-        var clientResource = _mapper.Map<ClientResource>(client);
+        var clientResource = _mapper.Map<ModerateurResource>(client);
 
         return Ok(clientResource); // Authentification réussie, retourne les données du client
     }
 
     [HttpGet]
-    [ProducesResponseType(200, Type = typeof(IEnumerable<Client>))]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<Evenement>))]
     public IActionResult GetClients()
     {
-        var clients = _mapper.Map<List<ClientResource>>(_clientService.GetClients());
+        var clients = _mapper.Map<List<ModerateurResource>>(_clientService.GetClients());
 
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -114,7 +114,7 @@ public class ClientsController : ControllerBase
     [ProducesResponseType(400)]
     [ProducesResponseType(204)]
     [ProducesResponseType(404)]
-    public IActionResult UpdateClient(int clientId, [FromBody] ClientResource updatedClient)
+    public IActionResult UpdateClient(int clientId, [FromBody] ModerateurResource updatedClient)
     {
         if (updatedClient == null)
             return BadRequest(ModelState);
@@ -128,7 +128,7 @@ public class ClientsController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest();
 
-        var clientMap = _mapper.Map<Client>(updatedClient);
+        var clientMap = _mapper.Map<Evenement>(updatedClient);
 
         if (!_clientService.UpdateClient(clientMap))
         {

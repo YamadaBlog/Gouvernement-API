@@ -24,7 +24,7 @@ public class UsersController : ControllerBase
     [ProducesResponseType(204)]
     [ProducesResponseType(400)]
 
-    public IActionResult CreateUser([FromBody] UserResource userCreate)
+    public IActionResult CreateUser([FromBody] EvenementResource userCreate)
     {
         if (userCreate == null)
             return BadRequest(ModelState);
@@ -41,7 +41,7 @@ public class UsersController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var userMap = _mapper.Map<User>(userCreate);
+        var userMap = _mapper.Map<Interaction>(userCreate);
 
         if (!_userService.CreateUser(userMap))
         {
@@ -58,7 +58,7 @@ public class UsersController : ControllerBase
         if (!_userService.UserExistsById(userId))
             return NotFound();
 
-        var userOrders = _mapper.Map<List<SupplierOrderResource>>(
+        var userOrders = _mapper.Map<List<RessourceResource>>(
             _userService.GetSupplierOrdersByUser(userId));
 
         if (!ModelState.IsValid)
@@ -68,7 +68,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost("{userEmail},{userMdp}")]
-    [ProducesResponseType(200, Type = typeof(UserResource))]
+    [ProducesResponseType(200, Type = typeof(EvenementResource))]
     [ProducesResponseType(400)]
     [ProducesResponseType(401)]
     public IActionResult GetAuthauthUser(string userEmail, string userMdp)
@@ -78,20 +78,20 @@ public class UsersController : ControllerBase
         if (user == null)
             return Unauthorized(); // L'authentification a échoué
 
-        var userResource = _mapper.Map<UserResource>(user);
+        var userResource = _mapper.Map<EvenementResource>(user);
 
         return Ok(userResource); // Authentification réussie, retourne les données du user
     }
 
     [HttpGet("{userId}")]
-    [ProducesResponseType(200, Type = typeof(User))]
+    [ProducesResponseType(200, Type = typeof(Interaction))]
     [ProducesResponseType(400)]
     public IActionResult GetUserById(int userId)
     {
         if (!_userService.UserExistsById(userId))
             return NotFound();
 
-        var user = _mapper.Map<UserResource>(_userService.GetUserById(userId));
+        var user = _mapper.Map<EvenementResource>(_userService.GetUserById(userId));
 
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -100,10 +100,10 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType(200, Type = typeof(IEnumerable<User>))]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<Interaction>))]
     public IActionResult GetUsers()
     {
-        var users = _mapper.Map<List<UserResource>>(_userService.GetUsers());
+        var users = _mapper.Map<List<EvenementResource>>(_userService.GetUsers());
 
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -115,7 +115,7 @@ public class UsersController : ControllerBase
     [ProducesResponseType(400)]
     [ProducesResponseType(204)]
     [ProducesResponseType(404)]
-    public IActionResult UpdateUser(int userId, [FromBody] UserResource updatedUser)
+    public IActionResult UpdateUser(int userId, [FromBody] EvenementResource updatedUser)
     {
         if (updatedUser == null)
             return BadRequest(ModelState);
@@ -129,7 +129,7 @@ public class UsersController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest();
 
-        var userMap = _mapper.Map<User>(updatedUser);
+        var userMap = _mapper.Map<Interaction>(updatedUser);
 
         if (!_userService.UpdateUser(userMap))
         {

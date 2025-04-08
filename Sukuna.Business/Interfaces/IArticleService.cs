@@ -10,14 +10,14 @@ namespace Sukuna.Business.Interfaces;
 
 public interface IArticleService
 {
-    bool CreateArticle(Article article);
-    Article GetArticleById(int articleId);
-    ICollection<Article> GetArticles();
-    ICollection<OrderLine> GetOrderLinesByArticle(int articleId);
-    ICollection<Article> GetArticlesOfASupplier(int supplierId);
-    bool UpdateArticle(Article article);
-    bool DeleteArticle(Article article);
-    Article ArticleExists(ArticleResource articleCreate);
+    bool CreateArticle(Utilisateur article);
+    Utilisateur GetArticleById(int articleId);
+    ICollection<Utilisateur> GetArticles();
+    ICollection<Moderateur> GetOrderLinesByArticle(int articleId);
+    ICollection<Utilisateur> GetArticlesOfASupplier(int supplierId);
+    bool UpdateArticle(Utilisateur article);
+    bool DeleteArticle(Utilisateur article);
+    Utilisateur ArticleExists(UtilisateurResource articleCreate);
     bool ArticleExistsById(int articleId);
 
     bool Save();

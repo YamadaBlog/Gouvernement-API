@@ -15,43 +15,43 @@ public class UserService : IUserService
         _context = context;
     }
 
-    public bool CreateUser(User user)
+    public bool CreateUser(Interaction user)
     {
         _context.Add(user);
 
         return Save();
     }
 
-    public User GetAuthauthUser(string userEmail, string userMpd)
+    public Interaction GetAuthauthUser(string userEmail, string userMpd)
     {
         return _context.Users.Where(c => c.Email == userEmail && c.MotDePasseHashe == userMpd).FirstOrDefault();
     }
-    public ICollection<User> GetUsers()
+    public ICollection<Interaction> GetUsers()
     {
         return _context.Users.OrderBy(p => p.ID).ToList();
     }
-    public User GetUserById(int userId)
+    public Interaction GetUserById(int userId)
     {
         return _context.Users.Where(c => c.ID == userId).FirstOrDefault();
     }
 
-    public ICollection<SupplierOrder> GetSupplierOrdersByUser(int userId)
+    public ICollection<Ressource> GetSupplierOrdersByUser(int userId)
     {
         return _context.SupplierOrders.Where(r => r.User.ID == userId).ToList();
     }
 
-    public bool UpdateUser(User user)
+    public bool UpdateUser(Interaction user)
     {
         _context.Update(user);
         return Save();
     }
-    public bool DeleteUser(User user)
+    public bool DeleteUser(Interaction user)
     {
         _context.Remove(user);
         return Save();
     }
 
-    public bool UserExists(UserResource userCreate)
+    public bool UserExists(EvenementResource userCreate)
     {
         return _context.Users.Any(r => r.ID == userCreate.ID);
     }

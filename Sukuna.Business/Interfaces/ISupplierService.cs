@@ -10,13 +10,13 @@ namespace Sukuna.Business.Interfaces;
 
 public interface ISupplierService
 {
-    bool CreateSupplier(Supplier supplier);
-    Supplier GetSupplierById(int supplierId);
-    ICollection<Supplier> GetSuppliers();
-    ICollection<Article> GetArticlesBySupplier(int supplierId);
-    bool UpdateSupplier(Supplier supplier);
-    bool DeleteSupplier(Supplier supplier);
-    Supplier SupplierExists(SupplierResource supplierCreate);
+    bool CreateSupplier(Commentaire supplier);
+    Commentaire GetSupplierById(int supplierId);
+    ICollection<Commentaire> GetSuppliers();
+    ICollection<Utilisateur> GetArticlesBySupplier(int supplierId);
+    bool UpdateSupplier(Commentaire supplier);
+    bool DeleteSupplier(Commentaire supplier);
+    Commentaire SupplierExists(InteractionResource supplierCreate);
     bool SupplierExistsById(int supplierId);
 
     bool Save();
