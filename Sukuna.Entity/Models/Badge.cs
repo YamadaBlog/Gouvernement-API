@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sukuna.Common.Models
 {
@@ -13,11 +9,12 @@ namespace Sukuna.Common.Models
         public int IdBadge { get; set; }
 
         public string Description { get; set; }
-
         public int Points { get; set; }
 
-        // Relation : un Badge peut être associé à plusieurs événements
+        // Pour la relation avec Interaction
+        public ICollection<Interaction> Interactions { get; set; }
+
+        // Si la relation entre Badge et Evenement existe
         public ICollection<Evenement> Evenements { get; set; }
     }
-
 }

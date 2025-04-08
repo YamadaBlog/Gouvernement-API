@@ -10,10 +10,10 @@ namespace Sukuna.WebAPI.Controllers;
 [Route("api/[controller]")]
 public class ClientsController : ControllerBase
 {
-    private readonly IClientService _clientService;
+    private readonly IModerateurService _clientService;
     private readonly IMapper _mapper;
 
-    public ClientsController(IClientService clientService, IMapper mapper)
+    public ClientsController(IModerateurService clientService, IMapper mapper)
     {
         _clientService = clientService;
         _mapper = mapper;

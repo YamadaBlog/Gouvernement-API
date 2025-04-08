@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Sukuna.Common.Models
 {
@@ -7,31 +9,24 @@ namespace Sukuna.Common.Models
         [Key]
         public int IdUtilisateur { get; set; }
 
-        [Required]
         public string Nom { get; set; }
-
-        [Required]
         public string Prenom { get; set; }
 
-        [Required]
-        [EmailAddress]
         public string Email { get; set; }
-
-        [Required]
         public string MotDePasse { get; set; }
-
         public string Role { get; set; }
-
         public DateTime DateCreation { get; set; }
 
-        // Navigation properties
+        // Propriétés de navigation existantes
         public ICollection<Participation> Participations { get; set; }
         public ICollection<Commentaire> Commentaires { get; set; }
-
-        // En tant qu’organisateur d’événements
         public ICollection<Evenement> EvenementsOrganises { get; set; }
-
-        // Si l’utilisateur peut créer des ressources
         public ICollection<Ressource> RessourcesCreees { get; set; }
+
+        // Ajoute la collection pour les interactions
+        public ICollection<Interaction> Interactions { get; set; }
+
+        // Optionnel : si tu utilises des statistiques
+        public ICollection<Statistique> Statistiques { get; set; }
     }
 }

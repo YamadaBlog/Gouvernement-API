@@ -11,11 +11,11 @@ namespace Sukuna.WebAPI.Controllers;
 [Route("api/[controller]")]
 public class OrderLinesController : ControllerBase
 {
-    private readonly IOrderLineService _orderLineService;
+    private readonly ICommentaireService _orderLineService;
     private readonly IMapper _mapper;
     private readonly IClientOrderService _clientOrderService;
 
-    public OrderLinesController(IOrderLineService orderLineService, IMapper mapper, IClientOrderService clientOrderService)
+    public OrderLinesController(ICommentaireService orderLineService, IMapper mapper, IClientOrderService clientOrderService)
     {
         _orderLineService = orderLineService;
         _mapper = mapper;

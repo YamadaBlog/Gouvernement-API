@@ -11,10 +11,10 @@ namespace Sukuna.WebAPI.Controllers;
 [Route("api/[controller]")]
 public class ArticlesController : ControllerBase
 {
-    private readonly IArticleService _articleService;
+    private readonly IParticipationService _articleService;
     private readonly IMapper _mapper;
 
-    public ArticlesController(IArticleService articleService, IMapper mapper)
+    public ArticlesController(IParticipationService articleService, IMapper mapper)
     {
         _articleService = articleService;
         _mapper = mapper;

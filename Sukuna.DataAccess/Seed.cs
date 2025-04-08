@@ -1,4 +1,6 @@
-﻿using Sukuna.DataAccess.Data;
+﻿using System;
+using System.Linq;
+using Sukuna.DataAccess.Data;
 using Sukuna.Common.Models;
 
 namespace Sukuna.DataAccess
@@ -14,72 +16,140 @@ namespace Sukuna.DataAccess
 
         public void SeedDataContext()
         {
-            // Vérifie si la base de données contient déjà des données
-            if (context.Articles.Any() || context.Clients.Any() || context.Suppliers.Any() || context.TvaTypes.Any() ||
-                context.SupplierOrders.Any() || context.ClientOrders.Any() || context.OrderLines.Any() || context.Users.Any())
+            // Vérifier si la base contient déjà des données dans les entités principales
+            if (context.Utilisateurs.Any() || context.Evenements.Any())
             {
-                // La base de données a déjà été reinitialisée
-                context.Articles.RemoveRange(context.Articles);
-                context.Clients.RemoveRange(context.Clients);
-                context.Users.RemoveRange(context.Users);
-                context.Suppliers.RemoveRange(context.Suppliers);
-                context.ClientOrders.RemoveRange(context.ClientOrders);
-                context.SupplierOrders.RemoveRange(context.SupplierOrders);
-                context.OrderLines.RemoveRange(context.OrderLines);
-                context.TvaTypes.RemoveRange(context.TvaTypes);
+                // Supprimer les données dans un ordre respectant les clés étrangères
+                context.Moderateurs.RemoveRange(context.Moderateurs);
+                context.Commentaires.RemoveRange(context.Commentaires);
+                context.Participations.RemoveRange(context.Participations);
+                context.Ressources.RemoveRange(context.Ressources);
+                context.Badges.RemoveRange(context.Badges);
+                context.Interactions.RemoveRange(context.Interactions);
+                context.Statistiques.RemoveRange(context.Statistiques);
+                context.Evenements.RemoveRange(context.Evenements);
+                context.Utilisateurs.RemoveRange(context.Utilisateurs);
+
                 context.SaveChanges();
             }
 
-            var supplier1 = new Commentaire { Nom = "Supplier A", Adresse = "10 Rue du Commerce", Email = "supplierA@example.com" };
-            var supplier2 = new Commentaire { Nom = "Supplier B", Adresse = "20 Avenue des Vins", Email = "supplierB@example.com" };
+            // Création d'utilisateurs
+            var user1 = new Utilisateur
+            {
+                Nom = "Dupont",
+                Prenom = "Jean",
+                Email = "jean.dupont@example.com",
+                MotDePasse = "password",
+                Role = "User",
+                DateCreation = DateTime.UtcNow
+            };
 
-            context.Suppliers.AddRange(supplier1, supplier2);
+            var user2 = new Utilisateur
+            {
+                Nom = "Durand",
+                Prenom = "Marie",
+                Email = "marie.durand@example.com",
+                MotDePasse = "password",
+                Role = "User",
+                DateCreation = DateTime.UtcNow
+            };
+
+            // Utilisateur qui jouera le rôle de modérateur
+            var modUser = new Utilisateur
+            {
+                Nom = "Admin",
+                Prenom = "Alice",
+                Email = "admin@example.com",
+                MotDePasse = "adminpass",
+                Role = "Moderateur",
+                DateCreation = DateTime.UtcNow
+            };
+
+            context.Utilisateurs.AddRange(user1, user2, modUser);
             context.SaveChanges();
 
-            // Remplir la base de données avec des données initiales
-            var tvaType1 = new Badge { Nom = "TVA normale", Taux = 20, Description = "TVA standard" };
-            var tvaType2 = new Badge { Nom = "TVA réduite", Taux = 10, Description = "TVA réduite pour certains produits" };
-
-            context.TvaTypes.AddRange(tvaType1, tvaType2);
-
-            var article1 = new Utilisateur { Nom = "Vin rouge", Description = "Vin rouge de qualité", Prix = 15, QuantiteEnStock = 100, TvaType = tvaType1, Supplier = supplier1 };
-            var article2 = new Utilisateur { Nom = "Vin blanc", Description = "Vin blanc rafraîchissant", Prix = 12, QuantiteEnStock = 80, TvaType = tvaType1, Supplier = supplier2 };
-            var article3 = new Utilisateur { Nom = "Champagne", Description = "Champagne pétillant", Prix = 30, QuantiteEnStock = 50, TvaType = tvaType1, Supplier = supplier2 };
-
-            context.Articles.AddRange(article1, article2, article3);
-
-            var client1 = new Evenement { Nom = "Dupont", Prenom = "Jean", Adresse = "1 Rue de Paris", Email = "jean.dupont@example.com" };
-            var client2 = new Evenement { Nom = "Durand", Prenom = "Marie", Adresse = "5 Avenue des Fleurs", Email = "marie.durand@example.com" };
-
-            context.Clients.AddRange(client1, client2);
+            // Création d'un Badge (optionnel)
+            var badge1 = new Badge
+            {
+                Description = "Badge Débutant",
+                Points = 10
+            };
+            context.Badges.Add(badge1);
             context.SaveChanges();
 
-            var user1 = new Interaction { Nom = "Admin", Prenom = "Super", Email = "admin@example.com", MotDePasseHashe = "hashedpassword", Role = "Admin" };
-            var user2 = new Interaction { Nom = "Employé", Prenom = "Normal", Email = "employee@example.com", MotDePasseHashe = "hashedpassword", Role = "Employee" };
+            // Création d'événements (séminaires)
+            var event1 = new Evenement
+            {
+                Titre = "Séminaire .NET",
+                Description = "Séminaire sur les nouveautés de .NET",
+                Date = DateTime.UtcNow.AddDays(10),
+                Lieu = "Paris",
+                Type = "Webinaire",
+                NombreParticipantsMin = 5,
+                NombreParticipantsMax = 50,
+                Accessibilite = "Public",
+                DateCreation = DateTime.UtcNow,
+                // L'organisateur est user1
+                IdOrganisateur = user1.IdUtilisateur,
+                // Association du badge à l'événement (optionnel)
+                IdBadge = badge1.IdBadge
+            };
 
-            context.Users.AddRange(user1, user2);
+            var event2 = new Evenement
+            {
+                Titre = "Atelier Angular",
+                Description = "Atelier pour apprendre Angular",
+                Date = DateTime.UtcNow.AddDays(15),
+                Lieu = "Lyon",
+                Type = "Physique",
+                NombreParticipantsMin = 3,
+                NombreParticipantsMax = 30,
+                Accessibilite = "Privé",
+                DateCreation = DateTime.UtcNow,
+                // L'organisateur est user2
+                IdOrganisateur = user2.IdUtilisateur,
+                IdBadge = badge1.IdBadge
+            };
+
+            context.Evenements.AddRange(event1, event2);
             context.SaveChanges();
 
-            var supplierOrder1 = new Ressource { UserID = user1.ID, SupplierID = supplier1.ID, DateCommande = DateTime.Now, StatutCommande = "En attente" };
-            var supplierOrder2 = new Ressource { UserID = user2.ID, SupplierID = supplier2.ID, DateCommande = DateTime.Now, StatutCommande = "En attente" };
+            // Création d'un modérateur pour l'événement 1
+            var moderateur = new Moderateur
+            {
+                // Le modérateur est le modUser
+                IdUtilisateur = modUser.IdUtilisateur,
+                IdEvenement = event1.IdEvenement,
+                StatutValidation = "En attente",
+                DateValidation = DateTime.UtcNow
+            };
 
-            context.SupplierOrders.AddRange(supplierOrder1, supplierOrder2);
-
-            var clientOrder1 = new Participation { ClientID = client1.ID, DateCommande = DateTime.Now, StatutCommande = "En attente" };
-            var clientOrder2 = new Participation { ClientID = client2.ID, DateCommande = DateTime.Now, StatutCommande = "En attente" };
-
-            context.ClientOrders.AddRange(clientOrder1, clientOrder2);
+            context.Moderateurs.Add(moderateur);
             context.SaveChanges();
 
-            var orderLine1 = new Moderateur { SupplierOrderID = supplierOrder1.ID, ArticleID = article1.ID, Quantite = 10, PrixUnitaire = article1.Prix };
-            var orderLine2 = new Moderateur { SupplierOrderID = supplierOrder2.ID, ArticleID = article2.ID, Quantite = 20, PrixUnitaire = article2.Prix };
-            var orderLine3 = new Moderateur { ClientOrderID = clientOrder1.ID, ArticleID = article3.ID, Quantite = 5, PrixUnitaire = article3.Prix };
-            var orderLine4 = new Moderateur { ClientOrderID = clientOrder2.ID, ArticleID = article1.ID, Quantite = 15, PrixUnitaire = article1.Prix };
+            // Création d'un commentaire sur l'événement 1 par user2
+            var commentaire = new Commentaire
+            {
+                IdUtilisateur = user2.IdUtilisateur,
+                IdEvenement = event1.IdEvenement,
+                Contenu = "J'attends avec impatience ce séminaire !",
+                Date = DateTime.UtcNow
+            };
 
-            context.OrderLines.AddRange(orderLine1, orderLine2, orderLine3, orderLine4);
+            context.Commentaires.Add(commentaire);
+            context.SaveChanges();
 
+            // Exemple de participation : user1 s'inscrit à l'événement 1 en tant qu'organisateur (ou autre rôle)
+            var participation = new Participation
+            {
+                IdUtilisateur = user1.IdUtilisateur,
+                IdEvenement = event1.IdEvenement,
+                RoleParticipation = "Organisateur",
+                DateParticipation = DateTime.UtcNow
+            };
+
+            context.Participations.Add(participation);
             context.SaveChanges();
         }
     }
-        }
- 
+}

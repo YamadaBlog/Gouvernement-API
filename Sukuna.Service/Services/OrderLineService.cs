@@ -6,7 +6,7 @@ using Sukuna.DataAccess.Data;
 
 namespace Sukuna.Service.Services;
 
-public class OrderLineService : IOrderLineService
+public class OrderLineService : ICommentaireService
 {
     private readonly DataContext _context;
 
