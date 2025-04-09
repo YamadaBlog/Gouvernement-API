@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 namespace Sukuna.Common.Models
 {
-    public class Participation
 public class Participation
     {
         [Key]
