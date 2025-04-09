@@ -1,12 +1,14 @@
+using System;
 using Microsoft.EntityFrameworkCore;
-using Sukuna.DataAccess.Data;
-using Sukuna.DataAccess;
-using Sukuna.Service.Services;
-using Sukuna.Business.Interfaces;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Sukuna.DataAccess.Data;
+using Sukuna.DataAccess;           // Pour accéder à la classe Seed
+using Sukuna.Business.Interfaces;
+using Sukuna.Service;              // Assure-toi que tes services (EvenementService, etc.) soient dans ce namespace
+using Microsoft.OpenApi.Models;
 
 namespace Sukuna.WebAPI
 {
@@ -16,9 +18,11 @@ namespace Sukuna.WebAPI
         {
             var host = CreateHostBuilder(args).Build();
 
-            // Seed data if necessary
+            // Exécution du Seed si l'argument "seeddata" est passé
             if (args.Length == 1 && args[0].ToLower() == "seeddata")
+            {
                 SeedData(host);
+            }
 
             host.Run();
         }
@@ -39,6 +43,7 @@ namespace Sukuna.WebAPI
                 {
                     webBuilder.ConfigureServices((hostContext, services) =>
                     {
+                        // Configuration CORS
                         services.AddCors(options =>
                         {
                             options.AddPolicy("AllowLocalhost3000",
@@ -51,27 +56,29 @@ namespace Sukuna.WebAPI
                         });
 
                         services.AddControllers();
-
-                        services.AddTransient<Seed>();
-                        services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-                        services.AddScoped<IArticleService, ArticleService>();
-                        services.AddScoped<IClientService, ClientService>();
-                        services.AddScoped<IUserService, UserService>();
-                        services.AddScoped<ITvaTypeService, TvaTypeService>();
-                        services.AddScoped<IOrderLineService, OrderLineService>();
-                        services.AddScoped<ISupplierService, SupplierService>();
-                        services.AddScoped<ISupplierOrderService, SupplierOrderService>();
-                        services.AddScoped<IClientOrderService, ClientOrderService>();
-
-                        services.AddScoped<DataContext>();
-                        services.AddDbContext<DataContext>(option =>
+                        services.AddSwaggerGen(c =>
                         {
-                            option.UseSqlServer(hostContext.Configuration.GetConnectionString("DefaultConnection"));
-                            option.EnableSensitiveDataLogging();
+                            c.SwaggerDoc("v1", new OpenApiInfo { Title = "Sukuna API", Version = "v1" });
                         });
 
-                        services.AddSwaggerGen();
+                        // Enregistrement de la seed
+                        services.AddTransient<Seed>();
+                        // Enregistrement d'AutoMapper pour scanner tous les assemblies
+                        services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+                        // Enregistrement des services de la couche Business
+                        services.AddScoped<IEvenementService, EvenementService>();
+                        services.AddScoped<IParticipationService, ParticipationService>();
+                        services.AddScoped<ICommentaireService, CommentaireService>();
+                        services.AddScoped<IModerateurService, ModerateurService>();
+                        services.AddScoped<IUtilisateurService, UtilisateurService>();
+
+                        // Enregistrement du DataContext via AddDbContext
+                        services.AddDbContext<DataContext>(options =>
+                        {
+                            options.UseSqlServer(hostContext.Configuration.GetConnectionString("DefaultConnection"));
+                            options.EnableSensitiveDataLogging();
+                        });
                     })
                     .Configure(app =>
                     {
@@ -79,8 +86,12 @@ namespace Sukuna.WebAPI
 
                         if (env.IsDevelopment())
                         {
+                            app.UseDeveloperExceptionPage();
                             app.UseSwagger();
-                            app.UseSwaggerUI();
+                            app.UseSwaggerUI(c =>
+                            {
+                                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sukuna API V1");
+                            });
                         }
 
                         app.UseHttpsRedirection();
