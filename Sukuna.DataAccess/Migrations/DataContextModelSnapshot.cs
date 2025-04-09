@@ -87,8 +87,14 @@ namespace Sukuna.DataAccess.Migrations
                     b.Property<DateTime>("DateCreation")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("DateValidation")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Etat")
+                        .HasColumnType("int");
 
                     b.Property<int?>("IdBadge")
                         .HasColumnType("int");
@@ -118,6 +124,8 @@ namespace Sukuna.DataAccess.Migrations
                     b.HasKey("IdEvenement");
 
                     b.HasIndex("IdBadge");
+
+                    b.HasIndex("IdModerateur");
 
                     b.HasIndex("IdOrganisateur");
 
@@ -152,25 +160,19 @@ namespace Sukuna.DataAccess.Migrations
 
             modelBuilder.Entity("Sukuna.Common.Models.Moderateur", b =>
                 {
-                    b.Property<int>("IdUtilisateur")
+                    b.Property<int>("IdModerateur")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdUtilisateur"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdModerateur"));
 
                     b.Property<DateTime>("DateValidation")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("IdEvenement")
-                        .HasColumnType("int");
-
                     b.Property<string>("StatutValidation")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("IdUtilisateur");
-
-                    b.HasIndex("IdEvenement")
-                        .IsUnique();
+                    b.HasKey("IdModerateur");
 
                     b.ToTable("Moderateurs");
                 });
@@ -322,6 +324,11 @@ namespace Sukuna.DataAccess.Migrations
                         .HasForeignKey("IdBadge")
                         .OnDelete(DeleteBehavior.SetNull);
 
+                    b.HasOne("Sukuna.Common.Models.Moderateur", "Moderateur")
+                        .WithMany("EvenementsValides")
+                        .HasForeignKey("IdModerateur")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Sukuna.Common.Models.Utilisateur", "Organisateur")
                         .WithMany("EvenementsOrganises")
                         .HasForeignKey("IdOrganisateur")
@@ -329,6 +336,8 @@ namespace Sukuna.DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("Badge");
+
+                    b.Navigation("Moderateur");
 
                     b.Navigation("Organisateur");
                 });
@@ -350,17 +359,6 @@ namespace Sukuna.DataAccess.Migrations
                     b.Navigation("Badge");
 
                     b.Navigation("Utilisateur");
-                });
-
-            modelBuilder.Entity("Sukuna.Common.Models.Moderateur", b =>
-                {
-                    b.HasOne("Sukuna.Common.Models.Evenement", "Evenement")
-                        .WithOne("Moderateur")
-                        .HasForeignKey("Sukuna.Common.Models.Moderateur", "IdEvenement")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Evenement");
                 });
 
             modelBuilder.Entity("Sukuna.Common.Models.Participation", b =>
@@ -431,13 +429,16 @@ namespace Sukuna.DataAccess.Migrations
                 {
                     b.Navigation("Commentaires");
 
-                    b.Navigation("Moderateur");
-
                     b.Navigation("Participations");
 
                     b.Navigation("Ressources");
 
                     b.Navigation("Statistiques");
+                });
+
+            modelBuilder.Entity("Sukuna.Common.Models.Moderateur", b =>
+                {
+                    b.Navigation("EvenementsValides");
                 });
 
             modelBuilder.Entity("Sukuna.Common.Models.Utilisateur", b =>

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Sukuna.Business.Interfaces;
@@ -23,18 +22,20 @@ namespace Sukuna.WebAPI.Controllers
 
         // GET: api/Moderateur/evenement/{evenementId}
         [HttpGet("evenement/{evenementId}")]
-        public async Task<IActionResult> GetModerateursByEvenement(int evenementId)
+        public async Task<IActionResult> GetModerateurByEvenement(int evenementId)
         {
-            var moderateurs = await _moderateurService.GetModerateursByEvenementIdAsync(evenementId);
-            var moderateursResource = _mapper.Map<IEnumerable<Moderateur>, IEnumerable<ModerateurResource>>(moderateurs);
-            return Ok(moderateursResource);
+            var moderateur = await _moderateurService.GetModerateurByEvenementIdAsync(evenementId);
+            if (moderateur == null)
+                return NotFound();
+            var moderateurResource = _mapper.Map<Moderateur, ModerateurResource>(moderateur);
+            return Ok(moderateurResource);
         }
 
-        // GET: api/Moderateur/utilisateur/{utilisateurId}
-        [HttpGet("utilisateur/{utilisateurId}")]
-        public async Task<IActionResult> GetModerateurByUtilisateurId(int utilisateurId)
+        // GET: api/Moderateur/{id}
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetModerateurById(int id)
         {
-            var moderateur = await _moderateurService.GetModerateurByUtilisateurIdAsync(utilisateurId);
+            var moderateur = await _moderateurService.GetModerateurByIdAsync(id);
             if (moderateur == null)
                 return NotFound();
             var moderateurResource = _mapper.Map<Moderateur, ModerateurResource>(moderateur);
@@ -53,21 +54,21 @@ namespace Sukuna.WebAPI.Controllers
             if (await _moderateurService.SaveAsync())
             {
                 var result = _mapper.Map<Moderateur, ModerateurResource>(moderateur);
-                return CreatedAtAction(nameof(GetModerateurByUtilisateurId),
-                    new { utilisateurId = moderateur.IdUtilisateur }, result);
+                return CreatedAtAction(nameof(GetModerateurById),
+                    new { id = moderateur.IdModerateur }, result);
             }
             return BadRequest("Erreur lors de la création du modérateur");
         }
 
-        // PUT: api/Moderateur/{idUtilisateur}/{idEvenement}
-        [HttpPut("{idUtilisateur}/{idEvenement}")]
-        public async Task<IActionResult> UpdateModerateur(int idUtilisateur, int idEvenement, [FromBody] ModerateurResource moderateurResource)
+        // PUT: api/Moderateur/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateModerateur(int id, [FromBody] ModerateurResource moderateurResource)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var moderateurFromDb = await _moderateurService.GetModerateurByUtilisateurIdAsync(idUtilisateur);
-            if (moderateurFromDb == null || moderateurFromDb.IdEvenement != idEvenement)
+            var moderateurFromDb = await _moderateurService.GetModerateurByIdAsync(id);
+            if (moderateurFromDb == null)
                 return NotFound();
 
             _mapper.Map(moderateurResource, moderateurFromDb);
@@ -79,11 +80,11 @@ namespace Sukuna.WebAPI.Controllers
             return BadRequest("Erreur lors de la mise à jour du modérateur");
         }
 
-        // DELETE: api/Moderateur/{idUtilisateur}/{idEvenement}
-        [HttpDelete("{idUtilisateur}/{idEvenement}")]
-        public async Task<IActionResult> DeleteModerateur(int idUtilisateur, int idEvenement)
+        // DELETE: api/Moderateur/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteModerateur(int id)
         {
-            await _moderateurService.DeleteModerateurAsync(idUtilisateur, idEvenement);
+            await _moderateurService.DeleteModerateurAsync(id);
             if (await _moderateurService.SaveAsync())
                 return NoContent();
             return BadRequest("Erreur lors de la suppression du modérateur");

@@ -86,23 +86,44 @@ namespace Sukuna.WebAPI.Controllers
             return BadRequest("Erreur lors de la suppression de l'événement");
         }
 
-        // Endpoint optionnel pour permettre au modérateur d'approuver un événement
-        [HttpPost("{id}/approve")]
-        public async Task<IActionResult> ApproveEvenement(int id)
+        [HttpPost("{id}/valider")]
+        public async Task<IActionResult> ValiderEvenement(int id)
         {
             var evenement = await _evenementService.GetEvenementByIdAsync(id);
             if (evenement == null)
                 return NotFound();
 
-            // Exemple de logique d'approbation :
-            if (evenement.Moderateur != null)
-            {
-                evenement.Moderateur.StatutValidation = "Validé";
-                await _evenementService.UpdateEvenementAsync(evenement);
-                if (await _evenementService.SaveAsync())
-                    return Ok(new { message = "L'événement a été validé." });
-            }
-            return BadRequest("Erreur lors de la validation de l'événement");
+            if (evenement.Etat != EtatEvenement.EnAttente)
+                return BadRequest("Seuls les événements en attente peuvent être validés.");
+
+            evenement.Etat = EtatEvenement.Valide;
+            evenement.DateValidation = DateTime.UtcNow;
+
+            await _evenementService.UpdateEvenementAsync(evenement);
+            if (await _evenementService.SaveAsync())
+                return Ok(new { message = "Événement validé et publié." });
+
+            return BadRequest("Erreur lors de la validation de l'événement.");
         }
+
+        [HttpPost("{id}/demander-modification")]
+        public async Task<IActionResult> DemanderModification(int id)
+        {
+            var evenement = await _evenementService.GetEvenementByIdAsync(id);
+            if (evenement == null)
+                return NotFound("Événement introuvable.");
+
+            if (evenement.Etat != EtatEvenement.Valide)
+                return BadRequest("La demande de modification est réservée aux événements validés.");
+
+            evenement.Etat = EtatEvenement.ModificationDemandee;
+
+            await _evenementService.UpdateEvenementAsync(evenement);
+            if (await _evenementService.SaveAsync())
+                return Ok("Demande de modification enregistrée, un modérateur devra la valider.");
+
+            return BadRequest("Erreur lors de l'enregistrement de la demande de modification.");
+        }
+
     }
 }

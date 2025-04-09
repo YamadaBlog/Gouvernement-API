@@ -20,7 +20,7 @@ public interface IEvenementService
     Task CreateEvenementAsync(Evenement evenement);
 
     // Mise à jour d'un événement existant
-    Task UpdateEvenementAsync(Evenement evenement);
+    Task<bool> UpdateEvenementAsync(Evenement evenement);
 
     // Suppression d'un événement par son identifiant
     Task DeleteEvenementAsync(int id);

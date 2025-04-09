@@ -6,26 +6,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sukuna.Common.Models
+namespace Sukuna.Common.Models;
+
+public class Ressource
+
 {
-    public class Ressource
+    [Key]
+    public int IdRessource { get; set; }
 
-    {
-        [Key]
-        public int IdRessource { get; set; }
+    public string Titre { get; set; }
 
-        public string Titre { get; set; }
+    public string Contenu { get; set; }
 
-        public string Contenu { get; set; }
+    public string Type { get; set; }
 
-        public string Type { get; set; }
+    public int IdCreateur { get; set; }
+    [ForeignKey("IdCreateur")]
+    public Utilisateur Createur { get; set; }
 
-        public int IdCreateur { get; set; }
-        [ForeignKey("IdCreateur")]
-        public Utilisateur Createur { get; set; }
-
-        public int IdEvenement { get; set; }
-        [ForeignKey("IdEvenement")]
-        public Evenement Evenement { get; set; }
-    }
+    public int IdEvenement { get; set; }
+    [ForeignKey("IdEvenement")]
+    public Evenement Evenement { get; set; }
 }

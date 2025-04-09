@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Sukuna.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class NewTest : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -23,6 +23,20 @@ namespace Sukuna.DataAccess.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Badges", x => x.IdBadge);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Moderateurs",
+                columns: table => new
+                {
+                    IdModerateur = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StatutValidation = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DateValidation = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Moderateurs", x => x.IdModerateur);
                 });
 
             migrationBuilder.CreateTable(
@@ -58,9 +72,11 @@ namespace Sukuna.DataAccess.Migrations
                     NombreParticipantsMax = table.Column<int>(type: "int", nullable: false),
                     Accessibilite = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DateCreation = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IdOrganisateur = table.Column<int>(type: "int", nullable: false),
                     IdBadge = table.Column<int>(type: "int", nullable: true),
-                    IdModerateur = table.Column<int>(type: "int", nullable: true),
-                    IdOrganisateur = table.Column<int>(type: "int", nullable: false)
+                    Etat = table.Column<int>(type: "int", nullable: false),
+                    DateValidation = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IdModerateur = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -71,6 +87,12 @@ namespace Sukuna.DataAccess.Migrations
                         principalTable: "Badges",
                         principalColumn: "IdBadge",
                         onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Evenements_Moderateurs_IdModerateur",
+                        column: x => x.IdModerateur,
+                        principalTable: "Moderateurs",
+                        principalColumn: "IdModerateur",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Evenements_Utilisateurs_IdOrganisateur",
                         column: x => x.IdOrganisateur,
@@ -131,27 +153,6 @@ namespace Sukuna.DataAccess.Migrations
                         column: x => x.IdUtilisateur,
                         principalTable: "Utilisateurs",
                         principalColumn: "IdUtilisateur",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Moderateurs",
-                columns: table => new
-                {
-                    IdUtilisateur = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    IdEvenement = table.Column<int>(type: "int", nullable: false),
-                    StatutValidation = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DateValidation = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Moderateurs", x => x.IdUtilisateur);
-                    table.ForeignKey(
-                        name: "FK_Moderateurs_Evenements_IdEvenement",
-                        column: x => x.IdEvenement,
-                        principalTable: "Evenements",
-                        principalColumn: "IdEvenement",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -256,6 +257,11 @@ namespace Sukuna.DataAccess.Migrations
                 column: "IdBadge");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Evenements_IdModerateur",
+                table: "Evenements",
+                column: "IdModerateur");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Evenements_IdOrganisateur",
                 table: "Evenements",
                 column: "IdOrganisateur");
@@ -269,12 +275,6 @@ namespace Sukuna.DataAccess.Migrations
                 name: "IX_Interactions_IdUtilisateur",
                 table: "Interactions",
                 column: "IdUtilisateur");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Moderateurs_IdEvenement",
-                table: "Moderateurs",
-                column: "IdEvenement",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Participations_IdEvenement",
@@ -317,9 +317,6 @@ namespace Sukuna.DataAccess.Migrations
                 name: "Interactions");
 
             migrationBuilder.DropTable(
-                name: "Moderateurs");
-
-            migrationBuilder.DropTable(
                 name: "Participations");
 
             migrationBuilder.DropTable(
@@ -333,6 +330,9 @@ namespace Sukuna.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "Badges");
+
+            migrationBuilder.DropTable(
+                name: "Moderateurs");
 
             migrationBuilder.DropTable(
                 name: "Utilisateurs");

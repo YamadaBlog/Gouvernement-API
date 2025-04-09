@@ -31,12 +31,14 @@ namespace Sukuna.DataAccess.Data
                         .HasForeignKey(e => e.IdBadge)
                         .OnDelete(DeleteBehavior.SetNull);
 
-            // Relation : Evenement -> Moderateur (one-to-one)
+            // Nouvelle relation : Evenement -> Moderateur (many-to-one)
+            // Un événement peut être validé par un modérateur (optionnel)
+            // et un modérateur peut valider plusieurs événements.
             modelBuilder.Entity<Evenement>()
                         .HasOne(e => e.Moderateur)
-                        .WithOne(m => m.Evenement)
-                        .HasForeignKey<Moderateur>(m => m.IdEvenement)
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .WithMany(m => m.EvenementsValides)
+                        .HasForeignKey(e => e.IdModerateur)
+                        .OnDelete(DeleteBehavior.Restrict);
 
             // Relation : Evenement -> Organisateur (Utilisateur)
             modelBuilder.Entity<Evenement>()

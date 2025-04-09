@@ -17,16 +17,20 @@ namespace Sukuna.Service
             _context = context;
         }
 
-        public async Task<IEnumerable<Moderateur>> GetModerateursByEvenementIdAsync(int evenementId)
+        // Récupère le modérateur associé à un événement spécifique (si applicable)
+        public async Task<Moderateur> GetModerateurByEvenementIdAsync(int evenementId)
         {
-            return await _context.Moderateurs
-                                 .Where(m => m.IdEvenement == evenementId)
-                                 .ToListAsync();
+            return await _context.Evenements
+                                 .Where(e => e.IdEvenement == evenementId)
+                                 .Select(e => e.Moderateur)
+                                 .FirstOrDefaultAsync();
         }
 
-        public async Task<Moderateur> GetModerateurByUtilisateurIdAsync(int utilisateurId)
+
+        // Récupère un modérateur par son identifiant propre
+        public async Task<Moderateur> GetModerateurByIdAsync(int id)
         {
-            return await _context.Moderateurs.FirstOrDefaultAsync(m => m.IdUtilisateur == utilisateurId);
+            return await _context.Moderateurs.FirstOrDefaultAsync(m => m.IdModerateur == id);
         }
 
         public async Task CreateModerateurAsync(Moderateur moderateur)
@@ -39,9 +43,10 @@ namespace Sukuna.Service
             _context.Moderateurs.Update(moderateur);
         }
 
-        public async Task DeleteModerateurAsync(int utilisateurId, int evenementId)
+        // Supprime un modérateur par son identifiant propre
+        public async Task DeleteModerateurAsync(int id)
         {
-            var moderateur = await _context.Moderateurs.FirstOrDefaultAsync(m => m.IdUtilisateur == utilisateurId && m.IdEvenement == evenementId);
+            var moderateur = await _context.Moderateurs.FirstOrDefaultAsync(m => m.IdModerateur == id);
             if (moderateur != null)
             {
                 _context.Moderateurs.Remove(moderateur);

@@ -54,18 +54,8 @@ namespace Sukuna.DataAccess
                 DateCreation = DateTime.UtcNow
             };
 
-            // Utilisateur qui jouera le rôle de modérateur
-            var modUser = new Utilisateur
-            {
-                Nom = "Admin",
-                Prenom = "Alice",
-                Email = "admin@example.com",
-                MotDePasse = "adminpass",
-                Role = "Moderateur",
-                DateCreation = DateTime.UtcNow
-            };
-
-            context.Utilisateurs.AddRange(user1, user2, modUser);
+            // Ajout des utilisateurs
+            context.Utilisateurs.AddRange(user1, user2);
             context.SaveChanges();
 
             // Création d'un Badge (optionnel)
@@ -92,7 +82,9 @@ namespace Sukuna.DataAccess
                 // L'organisateur est user1
                 IdOrganisateur = user1.IdUtilisateur,
                 // Association du badge à l'événement (optionnel)
-                IdBadge = badge1.IdBadge
+                IdBadge = badge1.IdBadge,
+                // Par défaut, l'état est EnAttente
+                Etat = EtatEvenement.EnAttente
             };
 
             var event2 = new Evenement
@@ -108,23 +100,27 @@ namespace Sukuna.DataAccess
                 DateCreation = DateTime.UtcNow,
                 // L'organisateur est user2
                 IdOrganisateur = user2.IdUtilisateur,
-                IdBadge = badge1.IdBadge
+                IdBadge = badge1.IdBadge,
+                Etat = EtatEvenement.EnAttente
             };
 
             context.Evenements.AddRange(event1, event2);
             context.SaveChanges();
 
-            // Création d'un modérateur pour l'événement 1
+            // Création d'un modérateur indépendant
             var moderateur = new Moderateur
             {
-                // Le modérateur est le modUser
-                IdUtilisateur = modUser.IdUtilisateur,
-                IdEvenement = event1.IdEvenement,
                 StatutValidation = "En attente",
                 DateValidation = DateTime.UtcNow
+                // Optionnel : UtilisateurId reste null puisque le modérateur est indépendant
             };
 
             context.Moderateurs.Add(moderateur);
+            context.SaveChanges();
+
+            // Mise à jour de event1 pour lier le modérateur créé
+            event1.IdModerateur = moderateur.IdModerateur;
+            context.Evenements.Update(event1);
             context.SaveChanges();
 
             // Création d'un commentaire sur l'événement 1 par user2

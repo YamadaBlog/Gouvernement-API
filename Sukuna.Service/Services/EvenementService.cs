@@ -28,13 +28,22 @@ namespace Sukuna.Service
 
         public async Task CreateEvenementAsync(Evenement evenement)
         {
+            // Forcer l'état initial à EnAttente, même si le client a envoyé une autre valeur
+            evenement.Etat = EtatEvenement.EnAttente;
             await _context.Evenements.AddAsync(evenement);
         }
 
-        public async Task UpdateEvenementAsync(Evenement evenement)
+        public async Task<bool> UpdateEvenementAsync(Evenement evenement)
         {
+            if (evenement.Etat == EtatEvenement.Valide)
+            {
+                throw new InvalidOperationException("L'événement est validé. Pour toute modification, veuillez émettre une demande de modification.");
+            }
+
             _context.Evenements.Update(evenement);
+            return await _context.SaveChangesAsync() > 0;
         }
+
 
         public async Task DeleteEvenementAsync(int id)
         {
