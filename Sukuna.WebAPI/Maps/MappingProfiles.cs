@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Sukuna.Common.Models;
 using Sukuna.Common.Resources;
+using Sukuna.Common.Models;
 
 namespace Sukuna.WebAPI.Maps
 {
@@ -8,41 +8,22 @@ namespace Sukuna.WebAPI.Maps
     {
         public MappingProfiles()
         {
-            // Utilisateur
-            CreateMap<Utilisateur, UtilisateurResource>();
-            CreateMap<UtilisateurResource, Utilisateur>();
-
-            // Evenement
-            CreateMap<Evenement, EvenementResource>();
-            CreateMap<EvenementResource, Evenement>();
-
-            // Participation
-            CreateMap<Participation, ParticipationResource>();
-            CreateMap<ParticipationResource, Participation>();
-
-            // Moderateur
-            CreateMap<Moderateur, ModerateurResource>();
-            CreateMap<ModerateurResource, Moderateur>();
-
-            // Commentaire
-            CreateMap<Commentaire, CommentaireResource>();
-            CreateMap<CommentaireResource, Commentaire>();
-
-            // Ressource
-            CreateMap<Ressource, RessourceResource>();
-            CreateMap<RessourceResource, Ressource>();
-
-            // Badge
-            CreateMap<Badge, BadgeResource>();
-            CreateMap<BadgeResource, Badge>();
-
-            // Interaction
-            CreateMap<Interaction, InteractionResource>();
-            CreateMap<InteractionResource, Interaction>();
-
-            // Optionnel : Statistique, si besoin
-            CreateMap<Statistique, StatistiqueResource>();
-            CreateMap<StatistiqueResource, Statistique>();
+            CreateMap<Article, ArticleResource>();
+            CreateMap<TvaTypeResource, TvaType>();
+            CreateMap<ArticleResource, Article>();
+            CreateMap<TvaType, TvaTypeResource>();
+            CreateMap<Client,  ClientResource>();
+            CreateMap<ClientResource, Client>();
+            CreateMap<User, UserResource>();
+            CreateMap<UserResource, User>();
+            CreateMap<OrderLineResource, OrderLine>();
+            CreateMap<OrderLine, OrderLineResource>();
+            CreateMap<Supplier, SupplierResource>();
+            CreateMap<SupplierResource, Supplier>();
+            CreateMap<SupplierOrderResource, SupplierOrder>();
+            CreateMap<SupplierOrder, SupplierOrderResource>();
+            CreateMap<ClientOrder, ClientOrderResource>();
+            CreateMap<ClientOrderResource, ClientOrder>();
         }
     }
 }
