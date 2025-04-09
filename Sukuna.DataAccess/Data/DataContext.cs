@@ -33,7 +33,7 @@ namespace Sukuna.DataAccess.Data
 
             // Nouvelle relation : Evenement -> Moderateur (many-to-one)
             // Un événement peut être validé par un modérateur (optionnel)
-            // et un modérateur peut valider plusieurs événements.
+            // et un modérateur peut valider plusieurs événements. TEST FIX
             modelBuilder.Entity<Evenement>()
                         .HasOne(e => e.Moderateur)
                         .WithMany(m => m.EvenementsValides)
