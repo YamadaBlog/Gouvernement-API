@@ -55,6 +55,19 @@ namespace Sukuna.WebAPI.Controllers
             return BadRequest("Erreur lors de la création de l'utilisateur");
         }
 
+        [HttpPost("{userEmail},{userMpd}")]
+        public async Task<IActionResult> GetAuthauthUser(string userEmail, string userMpd)
+        {
+            var utilisateur = await _utilisateurService.GetAuthauthUser(userEmail, userMpd);
+
+            if (utilisateur == null)
+                return Unauthorized("L'authentification a échoué : utilisateur non trouvé ou mot de passe incorrect.");
+
+            var userResource = _mapper.Map<UtilisateurResource>(utilisateur);
+
+            return Ok(userResource);
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUtilisateur(int id, [FromBody] UtilisateurResource utilisateurResource)
         {

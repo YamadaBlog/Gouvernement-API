@@ -10,5 +10,6 @@ public class UtilisateurResource // Les ressources sont les saisies utilisateurs
     public string Prenom { get; set; }
     public string Email { get; set; }
     public string Role { get; set; }
+    public string MotDePasse { get; set; }
     public DateTime DateCreation { get; set; }
 }

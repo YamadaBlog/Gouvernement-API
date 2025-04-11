@@ -31,6 +31,12 @@ namespace Sukuna.Service
             await _context.Utilisateurs.AddAsync(utilisateur);
         }
 
+        public async Task<Utilisateur> GetAuthauthUser(string userEmail, string userMpd)
+        {
+            return await _context.Utilisateurs
+                .FirstOrDefaultAsync(c => c.Email == userEmail && c.MotDePasse == userMpd);
+        }
+
         public async Task UpdateUtilisateurAsync(Utilisateur utilisateur)
         {
             _context.Utilisateurs.Update(utilisateur);

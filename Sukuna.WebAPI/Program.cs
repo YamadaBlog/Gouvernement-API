@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Sukuna.DataAccess.Data;
 using Sukuna.DataAccess;           // Pour accéder à la classe Seed
 using Sukuna.Business.Interfaces;
-using Sukuna.Service;              // Assure-toi que tes services (EvenementService, etc.) soient dans ce namespace
+using Sukuna.Service;              // Assurez-vous que vos services (EvenementService, etc.) soient dans ce namespace
 using Microsoft.OpenApi.Models;
 
 namespace Sukuna.WebAPI
@@ -43,19 +43,22 @@ namespace Sukuna.WebAPI
                 {
                     webBuilder.ConfigureServices((hostContext, services) =>
                     {
-                        // Configuration CORS
+                        // Configuration CORS pour autoriser toutes les requêtes
                         services.AddCors(options =>
                         {
-                            options.AddPolicy("AllowLocalhost3000",
-                                builder =>
-                                {
-                                    builder.WithOrigins("http://localhost:3000")
-                                           .AllowAnyHeader()
-                                           .AllowAnyMethod();
-                                });
+                            options.AddPolicy("AllowAll", builder =>
+                            {
+                                builder.AllowAnyOrigin()
+                                       .AllowAnyHeader()
+                                       .AllowAnyMethod();
+                            });
                         });
 
-                        services.AddControllers();
+                        services.AddControllers().AddJsonOptions(options =>
+                        {
+                            // Vous pouvez configurer la sérialisation JSON si nécessaire
+                        });
+
                         services.AddSwaggerGen(c =>
                         {
                             c.SwaggerDoc("v1", new OpenApiInfo { Title = "Sukuna API", Version = "v1" });
@@ -63,7 +66,8 @@ namespace Sukuna.WebAPI
 
                         // Enregistrement de la seed
                         services.AddTransient<Seed>();
-                        // Enregistrement d'AutoMapper pour scanner tous les assemblies
+
+                        // Enregistrement d'AutoMapper
                         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
                         // Enregistrement des services de la couche Business
@@ -96,7 +100,10 @@ namespace Sukuna.WebAPI
 
                         app.UseHttpsRedirection();
                         app.UseRouting();
-                        app.UseCors("AllowLocalhost3000");
+
+                        // Application de la politique CORS "AllowAll" pour autoriser toutes les requêtes
+                        app.UseCors("AllowAll");
+
                         app.UseAuthorization();
 
                         app.UseEndpoints(endpoints =>
