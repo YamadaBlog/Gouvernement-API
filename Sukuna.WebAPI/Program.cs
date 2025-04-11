@@ -5,7 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Sukuna.DataAccess.Data;
-using Sukuna.DataAccess;           // Pour accéder à la classe Seed
+using Sukuna.DataAccess;           // Pour accï¿½der ï¿½ la classe Seed
 using Sukuna.Business.Interfaces;
 using Sukuna.Service;              // Assure-toi que tes services (EvenementService, etc.) soient dans ce namespace
 using Microsoft.OpenApi.Models;
@@ -18,7 +18,7 @@ namespace Sukuna.WebAPI
         {
             var host = CreateHostBuilder(args).Build();
 
-            // Exécution du Seed si l'argument "seeddata" est passé
+            // Exï¿½cution du Seed si l'argument "seeddata" est passï¿½
             if (args.Length == 1 && args[0].ToLower() == "seeddata")
             {
                 SeedData(host);
@@ -49,7 +49,7 @@ namespace Sukuna.WebAPI
                             options.AddPolicy("AllowLocalhost3000",
                                 builder =>
                                 {
-                                    builder.WithOrigins("http://localhost:3000")
+                                    builder.AllowAnyOrigin()
                                            .AllowAnyHeader()
                                            .AllowAnyMethod();
                                 });
