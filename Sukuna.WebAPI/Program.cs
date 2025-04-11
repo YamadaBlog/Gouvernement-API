@@ -5,7 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Sukuna.DataAccess.Data;
-using Sukuna.DataAccess;           // Pour accéder à la classe Seed
+using Sukuna.DataAccess;           // Pour accï¿½der ï¿½ la classe Seed
 using Sukuna.Business.Interfaces;
 using Sukuna.Service;              // Assurez-vous que vos services (EvenementService, etc.) soient dans ce namespace
 using Microsoft.OpenApi.Models;
@@ -18,7 +18,7 @@ namespace Sukuna.WebAPI
         {
             var host = CreateHostBuilder(args).Build();
 
-            // Exécution du Seed si l'argument "seeddata" est passé
+            // Exï¿½cution du Seed si l'argument "seeddata" est passï¿½
             if (args.Length == 1 && args[0].ToLower() == "seeddata")
             {
                 SeedData(host);
@@ -43,7 +43,7 @@ namespace Sukuna.WebAPI
                 {
                     webBuilder.ConfigureServices((hostContext, services) =>
                     {
-                        // Configuration CORS pour autoriser toutes les requêtes
+                        // Configuration CORS pour autoriser toutes les requÃªtes
                         services.AddCors(options =>
                         {
                             options.AddPolicy("AllowAll", builder =>
@@ -56,7 +56,7 @@ namespace Sukuna.WebAPI
 
                         services.AddControllers().AddJsonOptions(options =>
                         {
-                            // Vous pouvez configurer la sérialisation JSON si nécessaire
+                            // Vous pouvez configurer la sÃ©rialisation JSON si nÃ©cessaire
                         });
 
                         services.AddSwaggerGen(c =>
@@ -101,7 +101,7 @@ namespace Sukuna.WebAPI
                         app.UseHttpsRedirection();
                         app.UseRouting();
 
-                        // Application de la politique CORS "AllowAll" pour autoriser toutes les requêtes
+                        // Application de la politique CORS "AllowAll" pour autoriser toutes les requÃªtes
                         app.UseCors("AllowAll");
 
                         app.UseAuthorization();
