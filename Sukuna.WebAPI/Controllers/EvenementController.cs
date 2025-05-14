@@ -71,7 +71,7 @@ namespace Sukuna.WebAPI.Controllers
             if (await _evenementService.SaveAsync())
                 return NoContent();
 
-            return BadRequest("Erreur lors de la mise à jour de l'événement");
+            return Ok("L'évènement est mise à jour");
         }
 
         [HttpDelete("{id}")]
