@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Humanizer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -86,6 +87,7 @@ namespace Sukuna.WebAPI.Controllers
                 return BadRequest(ModelState);
 
             var evenement = _mapper.Map<EvenementResource, Evenement>(evenementResource);
+            evenement.IdOrganisateur = evenementResource.IdOrganisateur;
             await _evenementService.CreateEvenementAsync(evenement);
             if (await _evenementService.SaveAsync())
             {
