@@ -13,6 +13,9 @@ public interface IEvenementService
     // Récupère la liste de tous les événements
     Task<IEnumerable<Evenement>> GetAllEvenementsAsync();
 
+    // Nouvelle méthode pour récupérer uniquement les événements validés
+    Task<IEnumerable<Evenement>> GetValidatedEvenementsAsync();
+
     // Récupère un événement par son identifiant
     Task<Evenement> GetEvenementByIdAsync(int id);
 
@@ -21,6 +24,8 @@ public interface IEvenementService
 
     // Mise à jour d'un événement existant
     Task<bool> UpdateEvenementAsync(Evenement evenement);
+
+    Task ValidateEvenementAsync(int idEvenement, int idModerateur);
 
     // Suppression d'un événement par son identifiant
     Task DeleteEvenementAsync(int id);

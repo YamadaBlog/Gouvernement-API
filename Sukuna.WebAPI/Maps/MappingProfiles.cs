@@ -25,10 +25,6 @@ namespace Sukuna.WebAPI.Maps
             CreateMap<Participation, ParticipationResource>();
             CreateMap<ParticipationResource, Participation>();
 
-            // Moderateur
-            CreateMap<Moderateur, ModerateurResource>();
-            CreateMap<ModerateurResource, Moderateur>();
-
             // Commentaire
             CreateMap<Commentaire, CommentaireResource>();
             CreateMap<CommentaireResource, Commentaire>();

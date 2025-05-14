@@ -18,7 +18,16 @@ namespace Sukuna.Service
 
         public async Task<IEnumerable<Evenement>> GetAllEvenementsAsync()
         {
-            return await _context.Evenements.ToListAsync();
+            return await _context.Evenements
+                     .Where(e => e.Etat == EtatEvenement.EnAttente)
+                     .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Evenement>> GetValidatedEvenementsAsync()
+        {
+            return await _context.Evenements
+                     .Where(e => e.Etat == EtatEvenement.Valide)
+                     .ToListAsync();
         }
 
         public async Task<Evenement> GetEvenementByIdAsync(int id)
@@ -31,6 +40,25 @@ namespace Sukuna.Service
             // Forcer l'état initial à EnAttente, même si le client a envoyé une autre valeur
             evenement.Etat = EtatEvenement.EnAttente;
             await _context.Evenements.AddAsync(evenement);
+        }
+
+        public async Task ValidateEvenementAsync(int idEvenement, int idModerateur)
+        {
+            var evt = await _context.Evenements
+                                    .FirstOrDefaultAsync(e => e.IdEvenement == idEvenement);
+
+            if (evt == null)
+                throw new KeyNotFoundException($"Événement {idEvenement} introuvable.");
+
+            if (evt.Etat != EtatEvenement.EnAttente)
+                throw new InvalidOperationException("Seuls les événements en attente peuvent être validés.");
+
+            evt.Etat = EtatEvenement.Valide;
+            evt.DateValidation = DateTime.UtcNow;
+            evt.IdModerateur = idModerateur;
+
+            // EF Core saura détecter la modification
+            await _context.SaveChangesAsync();
         }
 
         public async Task<bool> UpdateEvenementAsync(Evenement evenement)

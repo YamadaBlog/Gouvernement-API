@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sukuna.Common.Models;
+using System;
 using System.Collections.Generic;
 
 namespace Sukuna.Common.Resources
@@ -16,16 +17,22 @@ namespace Sukuna.Common.Resources
         public string Accessibilite { get; set; }
         public DateTime DateCreation { get; set; }
 
-        // Propriété pour stocker l'ID de l'organisateur lors de la création
-        public int IdOrganisateur { get; set; }
+        // Nouveaux champs métier
+        public EtatEvenement Etat { get; set; }
+        public DateTime? DateValidation { get; set; }
 
-        // Optionnel : Détails complets de l'organisateur (pour l'affichage)
+        // On expose l’ID du validateur et son resource
+        public int? IdModerateur { get; set; }
+        public UtilisateurResource Moderateur { get; set; }
+
+        // Organisateur
+        public int IdOrganisateur { get; set; }
         public UtilisateurResource Organisateur { get; set; }
 
+        // Badge éventuel
         public BadgeResource Badge { get; set; }
-        public ModerateurResource Moderateur { get; set; }  // Détails du modérateur associé
 
-        // Listes supplémentaires
+        // Collections
         public IEnumerable<ParticipationResource> Participations { get; set; }
         public IEnumerable<CommentaireResource> Commentaires { get; set; }
         public IEnumerable<RessourceResource> Ressources { get; set; }
