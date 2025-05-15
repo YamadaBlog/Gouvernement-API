@@ -93,7 +93,6 @@ namespace Sukuna.WebAPI
                         services.AddScoped<IEvenementService, EvenementService>();
                         services.AddScoped<IParticipationService, ParticipationService>();
                         services.AddScoped<ICommentaireService, CommentaireService>();
-                        services.AddScoped<IModerateurService, ModerateurService>();
                         services.AddScoped<IUtilisateurService, UtilisateurService>();
 
                         services.AddDbContext<DataContext>(options =>

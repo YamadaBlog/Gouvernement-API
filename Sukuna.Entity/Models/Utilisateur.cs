@@ -19,6 +19,7 @@ namespace Sukuna.Common.Models
         public DateTime DateCreation { get; set; }
 
         // Propriétés de navigation existantes
+        public ICollection<Evenement> EvenementsValides { get; set; }
         public ICollection<Participation> Participations { get; set; }
         public ICollection<Commentaire> Commentaires { get; set; }
         public ICollection<Evenement> EvenementsOrganises { get; set; }
