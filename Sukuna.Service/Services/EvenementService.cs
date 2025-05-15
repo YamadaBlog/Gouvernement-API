@@ -63,11 +63,6 @@ namespace Sukuna.Service
 
         public async Task<bool> UpdateEvenementAsync(Evenement evenement)
         {
-            if (evenement.Etat == EtatEvenement.Valide)
-            {
-                throw new InvalidOperationException("L'événement est validé. Pour toute modification, veuillez émettre une demande de modification.");
-            }
-
             _context.Evenements.Update(evenement);
             return await _context.SaveChangesAsync() > 0;
         }
