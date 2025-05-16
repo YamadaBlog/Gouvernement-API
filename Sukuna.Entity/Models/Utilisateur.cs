@@ -12,12 +12,14 @@ namespace Sukuna.Common.Models
         public string Nom { get; set; }
         public string Prenom { get; set; }
 
+        [Required(ErrorMessage = "Email requis")]
         public string Email { get; set; }
         public string MotDePasse { get; set; }
         public string Role { get; set; }
         public DateTime DateCreation { get; set; }
 
         // Propriétés de navigation existantes
+        public ICollection<Evenement> EvenementsValides { get; set; }
         public ICollection<Participation> Participations { get; set; }
         public ICollection<Commentaire> Commentaires { get; set; }
         public ICollection<Evenement> EvenementsOrganises { get; set; }

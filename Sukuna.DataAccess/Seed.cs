@@ -16,11 +16,9 @@ namespace Sukuna.DataAccess
 
         public void SeedDataContext()
         {
-            // Vérifier si la base contient déjà des données dans les entités principales
+            // 1) Si la BDD contient déjà des données, on purge tout
             if (context.Utilisateurs.Any() || context.Evenements.Any())
             {
-                // Supprimer les données dans un ordre respectant les clés étrangères
-                context.Moderateurs.RemoveRange(context.Moderateurs);
                 context.Commentaires.RemoveRange(context.Commentaires);
                 context.Participations.RemoveRange(context.Participations);
                 context.Ressources.RemoveRange(context.Ressources);
@@ -29,11 +27,10 @@ namespace Sukuna.DataAccess
                 context.Statistiques.RemoveRange(context.Statistiques);
                 context.Evenements.RemoveRange(context.Evenements);
                 context.Utilisateurs.RemoveRange(context.Utilisateurs);
-
                 context.SaveChanges();
             }
 
-            // Création d'utilisateurs
+            // 2) Création des utilisateurs
             var user1 = new Utilisateur
             {
                 Nom = "Dupont",
@@ -43,7 +40,6 @@ namespace Sukuna.DataAccess
                 Role = "User",
                 DateCreation = DateTime.UtcNow
             };
-
             var user2 = new Utilisateur
             {
                 Nom = "Durand",
@@ -53,12 +49,20 @@ namespace Sukuna.DataAccess
                 Role = "User",
                 DateCreation = DateTime.UtcNow
             };
+            var modUser = new Utilisateur
+            {
+                Nom = "Admin",
+                Prenom = "Alice",
+                Email = "alice.admin@example.com",
+                MotDePasse = "adminpass",
+                Role = "Moderateur",
+                DateCreation = DateTime.UtcNow
+            };
 
-            // Ajout des utilisateurs
-            context.Utilisateurs.AddRange(user1, user2);
+            context.Utilisateurs.AddRange(user1, user2, modUser);
             context.SaveChanges();
 
-            // Création d'un Badge (optionnel)
+            // 3) Création d'un Badge
             var badge1 = new Badge
             {
                 Description = "Badge Débutant",
@@ -67,7 +71,7 @@ namespace Sukuna.DataAccess
             context.Badges.Add(badge1);
             context.SaveChanges();
 
-            // Création d'événements (séminaires)
+            // 4) Création d'événements
             var event1 = new Evenement
             {
                 Titre = "Séminaire .NET",
@@ -79,14 +83,10 @@ namespace Sukuna.DataAccess
                 NombreParticipantsMax = 50,
                 Accessibilite = "Public",
                 DateCreation = DateTime.UtcNow,
-                // L'organisateur est user1
                 IdOrganisateur = user1.IdUtilisateur,
-                // Association du badge à l'événement (optionnel)
                 IdBadge = badge1.IdBadge,
-                // Par défaut, l'état est EnAttente
                 Etat = EtatEvenement.EnAttente
             };
-
             var event2 = new Evenement
             {
                 Titre = "Atelier Angular",
@@ -98,53 +98,66 @@ namespace Sukuna.DataAccess
                 NombreParticipantsMax = 30,
                 Accessibilite = "Privé",
                 DateCreation = DateTime.UtcNow,
-                // L'organisateur est user2
                 IdOrganisateur = user2.IdUtilisateur,
                 IdBadge = badge1.IdBadge,
                 Etat = EtatEvenement.EnAttente
             };
-
-            context.Evenements.AddRange(event1, event2);
-            context.SaveChanges();
-
-            // Création d'un modérateur indépendant
-            var moderateur = new Moderateur
+            // événement déjà validé par le modérateur
+            var event3 = new Evenement
             {
-                StatutValidation = "En attente",
-                DateValidation = DateTime.UtcNow
-                // Optionnel : UtilisateurId reste null puisque le modérateur est indépendant
+                Titre = "Conférence React",
+                Description = "Introduction à React et son écosystème",
+                Date = DateTime.UtcNow.AddDays(20),
+                Lieu = "Marseille",
+                Type = "Webinaire",
+                NombreParticipantsMin = 10,
+                NombreParticipantsMax = 100,
+                Accessibilite = "Public",
+                DateCreation = DateTime.UtcNow,
+                IdOrganisateur = user1.IdUtilisateur,
+                IdBadge = badge1.IdBadge,
+                Etat = EtatEvenement.Valide,
+                DateValidation = DateTime.UtcNow,
+                IdModerateur = modUser.IdUtilisateur
             };
 
-            context.Moderateurs.Add(moderateur);
+            context.Evenements.AddRange(event1, event2, event3);
             context.SaveChanges();
 
-            // Mise à jour de event1 pour lier le modérateur créé
-            event1.IdModerateur = moderateur.IdModerateur;
-            context.Evenements.Update(event1);
-            context.SaveChanges();
-
-            // Création d'un commentaire sur l'événement 1 par user2
-            var commentaire = new Commentaire
+            // 5) Commentaires
+            var commentaire1 = new Commentaire
             {
                 IdUtilisateur = user2.IdUtilisateur,
                 IdEvenement = event1.IdEvenement,
                 Contenu = "J'attends avec impatience ce séminaire !",
                 Date = DateTime.UtcNow
             };
-
-            context.Commentaires.Add(commentaire);
+            var commentaire2 = new Commentaire
+            {
+                IdUtilisateur = user1.IdUtilisateur,
+                IdEvenement = event3.IdEvenement,
+                Contenu = "Super événement, hâte d'y être.",
+                Date = DateTime.UtcNow
+            };
+            context.Commentaires.AddRange(commentaire1, commentaire2);
             context.SaveChanges();
 
-            // Exemple de participation : user1 s'inscrit à l'événement 1 en tant qu'organisateur (ou autre rôle)
-            var participation = new Participation
+            // 6) Participations
+            var participation1 = new Participation
             {
                 IdUtilisateur = user1.IdUtilisateur,
                 IdEvenement = event1.IdEvenement,
                 RoleParticipation = "Organisateur",
                 DateParticipation = DateTime.UtcNow
             };
-
-            context.Participations.Add(participation);
+            var participation2 = new Participation
+            {
+                IdUtilisateur = user2.IdUtilisateur,
+                IdEvenement = event3.IdEvenement,
+                RoleParticipation = "Participant",
+                DateParticipation = DateTime.UtcNow
+            };
+            context.Participations.AddRange(participation1, participation2);
             context.SaveChanges();
         }
     }

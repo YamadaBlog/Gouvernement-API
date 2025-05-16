@@ -14,15 +14,16 @@ namespace Sukuna.WebAPI.Maps
 
             // Evenement
             CreateMap<Evenement, EvenementResource>();
-            CreateMap<EvenementResource, Evenement>();
+            CreateMap<EvenementResource, Evenement>()
+                // Ignorer les propriétés non modifiables pour ne pas écraser l'organisateur et l'état
+                .ForMember(dest => dest.IdOrganisateur, opt => opt.Ignore())
+                .ForMember(dest => dest.DateCreation, opt => opt.Ignore())
+                .ForMember(dest => dest.Etat, opt => opt.Ignore())
+                .ForMember(dest => dest.DateValidation, opt => opt.Ignore());
 
             // Participation
             CreateMap<Participation, ParticipationResource>();
             CreateMap<ParticipationResource, Participation>();
-
-            // Moderateur
-            CreateMap<Moderateur, ModerateurResource>();
-            CreateMap<ModerateurResource, Moderateur>();
 
             // Commentaire
             CreateMap<Commentaire, CommentaireResource>();
@@ -40,7 +41,7 @@ namespace Sukuna.WebAPI.Maps
             CreateMap<Interaction, InteractionResource>();
             CreateMap<InteractionResource, Interaction>();
 
-            // Optionnel : Statistique, si besoin
+            // Statistique (optionnel)
             CreateMap<Statistique, StatistiqueResource>();
             CreateMap<StatistiqueResource, Statistique>();
         }

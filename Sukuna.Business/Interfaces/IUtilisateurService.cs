@@ -13,6 +13,9 @@ public interface IUtilisateurService
     // Récupère la liste de tous les utilisateurs
     Task<IEnumerable<Utilisateur>> GetAllUtilisateursAsync();
 
+    // Vérifie la connexion de l'utilisateur
+    Task<Utilisateur> GetAuthauthUser(string userEmail, string userMpd);
+
     // Récupère un utilisateur par son identifiant
     Task<Utilisateur> GetUtilisateurByIdAsync(int id);
 

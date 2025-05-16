@@ -1,9 +1,13 @@
 ﻿using AutoMapper;
+using Humanizer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Sukuna.Business.Interfaces;
 using Sukuna.Common.Models;
 using Sukuna.Common.Resources;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Sukuna.WebAPI.Controllers
@@ -21,12 +25,49 @@ namespace Sukuna.WebAPI.Controllers
             _mapper = mapper;
         }
 
+        // GET api/Evenement
         [HttpGet]
-        public async Task<IActionResult> GetAllEvenements()
+        public async Task<IActionResult> GetAll()
         {
-            var evenements = await _evenementService.GetAllEvenementsAsync();
-            var evenementsResource = _mapper.Map<IEnumerable<Evenement>, IEnumerable<EvenementResource>>(evenements);
-            return Ok(evenementsResource);
+            var evts = await _evenementService.GetValidatedEvenementsAsync();
+            var res = _mapper.Map<IEnumerable<EvenementResource>>(evts);
+            return Ok(res);
+        }
+
+        // GET api/Evenement/pending
+        [HttpGet("pending")]
+        public async Task<IActionResult> GetPending()
+        {
+            var evts = await _evenementService.GetAllEvenementsAsync();
+            var res = _mapper.Map<IEnumerable<EvenementResource>>(evts);
+            return Ok(res);
+        }
+
+        [HttpPut("{id}/validate/{moderateurId}")]
+        public async Task<IActionResult> Validate(int id, int moderateurId)
+        {
+            try
+            {
+                await _evenementService.ValidateEvenementAsync(id, moderateurId);
+                return Ok(new { message = "Événement validé avec succès." });
+            }
+            catch (KeyNotFoundException knf)
+            {
+                return NotFound(knf.Message);
+            }
+            catch (InvalidOperationException ioe)
+            {
+                return BadRequest(ioe.Message);
+            }
+            catch (DbUpdateException dbu)
+            {
+                // ⚠️ Affiche la vraie erreur SQL durant le dev
+                return StatusCode(500, dbu.InnerException?.Message ?? dbu.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpGet("{id}")]
@@ -46,6 +87,7 @@ namespace Sukuna.WebAPI.Controllers
                 return BadRequest(ModelState);
 
             var evenement = _mapper.Map<EvenementResource, Evenement>(evenementResource);
+            evenement.IdOrganisateur = evenementResource.IdOrganisateur;
             await _evenementService.CreateEvenementAsync(evenement);
             if (await _evenementService.SaveAsync())
             {
@@ -71,7 +113,7 @@ namespace Sukuna.WebAPI.Controllers
             if (await _evenementService.SaveAsync())
                 return NoContent();
 
-            return BadRequest("Erreur lors de la mise à jour de l'événement");
+            return Ok("L'évènement est mise à jour");
         }
 
         [HttpDelete("{id}")]
@@ -86,25 +128,6 @@ namespace Sukuna.WebAPI.Controllers
             return BadRequest("Erreur lors de la suppression de l'événement");
         }
 
-        [HttpPost("{id}/valider")]
-        public async Task<IActionResult> ValiderEvenement(int id)
-        {
-            var evenement = await _evenementService.GetEvenementByIdAsync(id);
-            if (evenement == null)
-                return NotFound();
-
-            if (evenement.Etat != EtatEvenement.EnAttente)
-                return BadRequest("Seuls les événements en attente peuvent être validés.");
-
-            evenement.Etat = EtatEvenement.Valide;
-            evenement.DateValidation = DateTime.UtcNow;
-
-            await _evenementService.UpdateEvenementAsync(evenement);
-            if (await _evenementService.SaveAsync())
-                return Ok(new { message = "Événement validé et publié." });
-
-            return BadRequest("Erreur lors de la validation de l'événement.");
-        }
 
         [HttpPost("{id}/demander-modification")]
         public async Task<IActionResult> DemanderModification(int id)

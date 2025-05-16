@@ -1,13 +1,16 @@
 using System;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Sukuna.DataAccess.Data;
-using Sukuna.DataAccess;           // Pour accéder à la classe Seed
+using Sukuna.DataAccess;           // Pour accÃ©der Ã  la classe Seed
 using Sukuna.Business.Interfaces;
-using Sukuna.Service;              // Assure-toi que tes services (EvenementService, etc.) soient dans ce namespace
+using Sukuna.Service;              // Vos services (EvenementService, etc.)
 using Microsoft.OpenApi.Models;
 
 namespace Sukuna.WebAPI
@@ -18,7 +21,7 @@ namespace Sukuna.WebAPI
         {
             var host = CreateHostBuilder(args).Build();
 
-            // Exécution du Seed si l'argument "seeddata" est passé
+            // ExÃ©cution du Seed si l'argument "seeddata" est passÃ©
             if (args.Length == 1 && args[0].ToLower() == "seeddata")
             {
                 SeedData(host);
@@ -29,12 +32,10 @@ namespace Sukuna.WebAPI
 
         private static void SeedData(IHost host)
         {
-            using (var scope = host.Services.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                var seed = services.GetRequiredService<Seed>();
-                seed.SeedDataContext();
-            }
+            using var scope = host.Services.CreateScope();
+            var services = scope.ServiceProvider;
+            var seed = services.GetRequiredService<Seed>();
+            seed.SeedDataContext();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -43,37 +44,57 @@ namespace Sukuna.WebAPI
                 {
                     webBuilder.ConfigureServices((hostContext, services) =>
                     {
-                        // Configuration CORS
+                        // 1. Configuration CORS
                         services.AddCors(options =>
                         {
-                            options.AddPolicy("AllowLocalhost3000",
-                                builder =>
-                                {
-                                    builder.WithOrigins("http://localhost:3000")
-                                           .AllowAnyHeader()
-                                           .AllowAnyMethod();
-                                });
+                            options.AddPolicy("AllowAll", builder =>
+                            {
+                                builder.AllowAnyOrigin()
+                                       .AllowAnyHeader()
+                                       .AllowAnyMethod();
+                            });
                         });
 
-                        services.AddControllers();
+                        // 2. Configuration JWT
+                        var jwtSection = hostContext.Configuration.GetSection("Jwt");
+                        var key = Encoding.UTF8.GetBytes(jwtSection["Key"]);
+                        services.AddAuthentication(options =>
+                        {
+                            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                        })
+                        .AddJwtBearer(options =>
+                        {
+                            options.RequireHttpsMetadata = false;
+                            options.SaveToken = true;
+                            options.TokenValidationParameters = new TokenValidationParameters
+                            {
+                                ValidateIssuer = true,
+                                ValidateAudience = true,
+                                ValidateIssuerSigningKey = true,
+                                ValidIssuer = jwtSection["Issuer"],
+                                ValidAudience = jwtSection["Audience"],
+                                IssuerSigningKey = new SymmetricSecurityKey(key)
+                            };
+                        });
+
+                        // 3. Controllers & Swagger
+                        services.AddControllers()
+                                .AddJsonOptions(opts => { /* config JSON si besoin */ });
                         services.AddSwaggerGen(c =>
                         {
                             c.SwaggerDoc("v1", new OpenApiInfo { Title = "Sukuna API", Version = "v1" });
                         });
 
-                        // Enregistrement de la seed
+                        // 4. Seed, AutoMapper, Services, DbContext
                         services.AddTransient<Seed>();
-                        // Enregistrement d'AutoMapper pour scanner tous les assemblies
                         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-                        // Enregistrement des services de la couche Business
                         services.AddScoped<IEvenementService, EvenementService>();
                         services.AddScoped<IParticipationService, ParticipationService>();
                         services.AddScoped<ICommentaireService, CommentaireService>();
-                        services.AddScoped<IModerateurService, ModerateurService>();
                         services.AddScoped<IUtilisateurService, UtilisateurService>();
 
-                        // Enregistrement du DataContext via AddDbContext
                         services.AddDbContext<DataContext>(options =>
                         {
                             options.UseSqlServer(hostContext.Configuration.GetConnectionString("DefaultConnection"));
@@ -96,7 +117,10 @@ namespace Sukuna.WebAPI
 
                         app.UseHttpsRedirection();
                         app.UseRouting();
-                        app.UseCors("AllowLocalhost3000");
+
+                        // 5. Authentication & Authorization
+                        app.UseCors("AllowAll");
+                        app.UseAuthentication();    // <-- ajoutÃ©
                         app.UseAuthorization();
 
                         app.UseEndpoints(endpoints =>
