@@ -59,17 +59,52 @@ namespace Sukuna.WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateUtilisateur([FromBody] UtilisateurResource utilisateurResource)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
+            // 1) Créer et sauvegarder l’utilisateur
             var utilisateur = _mapper.Map<UtilisateurResource, Utilisateur>(utilisateurResource);
             await _utilisateurService.CreateUtilisateurAsync(utilisateur);
-            if (await _utilisateurService.SaveAsync())
+            if (!await _utilisateurService.SaveAsync())
+                return BadRequest("Erreur lors de la création de l'utilisateur");
+
+            // 2) Préparer les claims
+            var claims = new[]
             {
-                var result = _mapper.Map<Utilisateur, UtilisateurResource>(utilisateur);
-                return CreatedAtAction(nameof(GetUtilisateur), new { id = utilisateur.IdUtilisateur }, result);
-            }
-            return BadRequest("Erreur lors de la création de l'utilisateur");
+        new Claim(JwtRegisteredClaimNames.Sub, utilisateur.Email),
+        new Claim(ClaimTypes.NameIdentifier, utilisateur.IdUtilisateur.ToString()),
+        new Claim(ClaimTypes.Role, utilisateur.Role)
+    };
+
+            // 3) Construire le token JWT
+            var jwtSection = _configuration.GetSection("Jwt");
+            var key = Encoding.UTF8.GetBytes(jwtSection["Key"]);
+            var creds = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);
+            var expires = DateTime.UtcNow.AddMinutes(double.Parse(jwtSection["ExpireMinutes"]));
+            var jwt = new JwtSecurityToken(
+                              issuer: jwtSection["Issuer"],
+                              audience: jwtSection["Audience"],
+                              claims: claims,
+                              expires: expires,
+                              signingCredentials: creds
+                          );
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+            // 4) Mapper la ressource utilisateur pour la réponse
+            var userResource = _mapper.Map<Utilisateur, UtilisateurResource>(utilisateur);
+
+            // 5) Retourner le même objet que le login
+            return CreatedAtAction(
+                nameof(GetUtilisateur),
+                new { id = utilisateur.IdUtilisateur },
+                new
+                {
+                    token = tokenString,
+                    user = userResource
+                }
+            );
         }
+
 
         // POST: api/Utilisateur/login
         [AllowAnonymous]
